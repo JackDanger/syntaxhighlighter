@@ -87,7 +87,7 @@ dp.sh.Toolbar.Commands = {
 					highlighter.div.appendChild(flashcopier);
 				}
 				
-				flashcopier.innerHTML = '<embed src="' + dp.sh.ClipboardSwf + 'clipboard.swf" FlashVars="clipboard='+encodeURIComponent(code)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';
+				flashcopier.innerHTML = '<embed src="' + dp.sh.ClipboardSwf + '" FlashVars="clipboard='+encodeURIComponent(code)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';
 			}
 			
 			alert('The code is in your clipboard now');
