@@ -57,7 +57,7 @@ dp.sh.Toolbar.Commands = {
 		label: 'view plain',
 		func: function(sender, highlighter)
 		{
-			var code = highlighter.originalCode.replace(/</g, '&lt;');
+			var code = dp.sh.Utils.FixForBlogger(highlighter.originalCode).replace(/</g, '&lt;');
 			var wnd = window.open('', '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=0');
 			wnd.document.write('<textarea style="width:99%;height:99%">' + code + '</textarea>');
 			wnd.document.close();
@@ -70,11 +70,11 @@ dp.sh.Toolbar.Commands = {
 		check: function() { return window.clipboardData != null || dp.sh.ClipboardSwf != null; },
 		func: function(sender, highlighter)
 		{
-			var code = highlighter.originalCode;
-			
-			code = code.replace(/&lt;/g,'<');
-			code = code.replace(/&gt;/g,'>');
-			code = code.replace(/&amp;/g,'&');
+			var code = dp.sh.Utils.FixForBlogger(highlighter.originalCode)
+				.replace(/&lt;/g,'<')
+				.replace(/&gt;/g,'>')
+				.replace(/&amp;/g,'&')
+			;
 			
 			if(window.clipboardData)
 			{
@@ -181,6 +181,11 @@ dp.sh.Utils.CopyStyles = function(destDoc, sourceDoc)
 	for(var i = 0; i < links.length; i++)
 		if(links[i].rel.toLowerCase() == 'stylesheet')
 			destDoc.write('<link type="text/css" rel="stylesheet" href="' + links[i].href + '"></link>');
+}
+
+dp.sh.Utils.FixForBlogger = function(str)
+{
+	return (dp.sh.isBloggerMode == true) ? str.replace(/<br\s*\/?>|&lt;br\s*\/?&gt;/gi, '\n') : str;
 }
 
 //
@@ -444,7 +449,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 
 	function Unindent(str)
 	{
-		var lines = str.split('\n');
+		var lines = dp.sh.Utils.FixForBlogger(str).split('\n');
 		var indents = new Array();
 		var regex = new RegExp('^\\s*', 'g');
 		var min = 1000;
@@ -554,6 +559,11 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 dp.sh.Highlighter.prototype.GetKeywords = function(str) 
 {
 	return '\\b' + str.replace(/ /g, '\\b|\\b') + '\\b';
+}
+
+dp.sh.BloggerMode = function()
+{
+	dp.sh.isBloggerMode = true;
 }
 
 // highlightes all elements identified by name and gets source code from specified property

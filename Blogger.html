@@ -12,7 +12,7 @@
 <h1>dp.SyntaxHighlighter 1.5.0 Tests and Samples</h1>
 <p><a href="http://code.google.com/p/syntaxhighlighter/">http://code.google.com/p/syntaxhighlighter/</a></p>
 
-<h2><!-- InstanceBeginEditable name="Title" -->XML / HTML<!-- InstanceEndEditable --></h2>
+<h2><!-- InstanceBeginEditable name="Title" -->Title<!-- InstanceEndEditable --></h2>
 
 <div class="layout">
 
@@ -52,66 +52,13 @@
 Text body before.
 <hr/>
 <!-- InstanceBeginEditable name="Code" -->
-<h3>Using textarea</h3>
+<script type="text/javascript">
+window.isBloggerMode = true;
+</script>
 
-<textarea name="code" class="xml" rows="15" cols="100">
-<?xml version="1.0" encoding="utf-8" ?>
-<!-- Test case for issue #14 (http://code.google.com/p/syntaxhighlighter/issues/detail?id=14) -->
-<!-- Comment 1 -->Some Text<!-- Comment 2 -->
-<!-- end -->
-
-<!-- comments -->
-<rootNode>
-	<childNodes>
-		<childNode attribute = "value" namespace:attribute='value' attribute=/>
-		<childNode />
-		<childNode />
-		<childNode />
-		<childNode attribute="value"></childNode>
-		<namespace:childNode>
-			&lt;![CDATA[
-				this is some CDATA content
-				<!-- comments inside cdata -->
-				<b alert='false'>tags inside cdata</b>
-			]]>
-		</namespace:childNode>
-	</childNodes>
-</rootNode>
-
-<!--
-  -- Multiline comments <b>tag</b>
-  -->
-</textarea>
-
-<h3>Using pre</h3>
-
-<pre name="code" class="xml">
-&lt;?xml version="1.0" encoding="utf-8" ?> 
-
-&lt;!-- comments -->
-&lt;rootNode>
-	&lt;childNodes>
-		&lt;childNode attribute = "value" namespace:attribute='value' attribute=/>
-		&lt;childNode />
-		&lt;childNode />
-		&lt;childNode />
-		&lt;childNode attribute="value">&lt;/childNode>
-		&lt;namespace:childNode>
-			&lt;![CDATA[
-				this is some CDATA content
-				&lt;!-- comments inside cdata -->
-				&lt;b alert='false'>tags inside cdata&lt;/b>
-			]]>
-		&lt;/namespace:childNode>
-	&lt;/childNodes>
-&lt;/rootNode>
-
-&lt;!--
-  -- Multiline comments &lt;b>tag&lt;/b>
-  -->
+<pre name="code" class="js">
+&lt;script type='text/javascript'><br />_WidgetManager._Init=function(){};<br />_WidgetManager._SetPageActionUrl=function(){};<br />_WidgetManager._SetDataContext=function(){};<br />_WidgetManager._SetSystemMarkup=function(){};<br />_WidgetManager._RegisterWidget=function(){};<br />&lt;/script>
 </pre>
-
-
 <!-- InstanceEndEditable -->
 <hr/>
 Text body after.
