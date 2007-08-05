@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/Test.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>dp.SyntaxHighlighter Tests</title>
+<link type="text/css" rel="stylesheet" href="../Styles/SyntaxHighlighter.css"></link>
+<link href="../Styles/TestPages.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<h1>dp.SyntaxHighlighter 1.5.1 Tests and Samples</h1>
+<p><a href="http://code.google.com/p/syntaxhighlighter/">http://code.google.com/p/syntaxhighlighter/</a></p>
+
+<h2><!-- InstanceBeginEditable name="Title" -->Issue 10. VB crash test.<!-- InstanceEndEditable --></h2>
+
+<div class="layout">
+
+<div class="column1">
+	<h3>Languages:</h3>
+	<ol>
+		<li><a href="../CSharp.html">C#</a></li>
+		<li><a href="../CSS.html">CSS</a></li>
+		<li><a href="../Cpp.html">C++</a></li>
+		<li><a href="../Delphi.html">Delphi</a></li>
+		<li><a href="../Java.html">Java</a></li>
+		<li><a href="../JavaScript.html">JavaScript</a></li>
+		<li><a href="../PHP.html">PHP</a></li>
+		<li><a href="../Python.html">Python</a></li>
+		<li><a href="../Ruby.html">Ruby</a></li>
+		<li><a href="../SQL.html">SQL</a></li>
+		<li><a href="../VB.html">Visual Basic</a></li>
+		<li><a href="../XML.html">XML / HTML</a></li>
+	</ol>
+	<h3>Features:</h3>
+	<ol>
+		<li><a href="../SmartTabs.html">Smart tabs</a></li>
+		<li><a href="../FirstLine.html">First line</a> </li>
+		<li><a href="../CollapseCode.html">Expand code</a></li>
+		<li><a href="../ShowColumns.html">Show columns</a></li>
+		<li><a href="../Blogger.html">Blogger integration</a></li>
+		<li><a href="../NoGutter.html">No gutter</a></li>
+		<li><a href="../NoControls.html">No controls</a></li>
+	</ol>
+	<h3>Issues:</h3>
+	<ol>
+		<li><a href="Issue7.xml">#7, XSL transformation</a></li>
+		<li><a href="Issue15.html">#15, Incorrect single quote</a></li>
+		<li><a href="Issue10.html">#10, VB crash</a></li>
+		<li><a href="Issue19.html">#19, No matches</a></li>
+	</ol>
+</div>
+
+<div class="column2">
+<div class="block-box">Block before.</div>
+<!-- InstanceBeginEditable name="Code" -->
+<pre name="code" class="vb">
+Imports System
+Imports System.Collections.Generic
+Imports System.Text
+Imports ICSharpCode.NRefactory.Visitors
+Imports System.CodeDom
+Imports ICSharpCode.NRefactory.Ast
+Imports ICSharpCode.NRefactory
+Imports System.Collections
+
+Namespace IndexerLibrary
+	Public Class CodeDomVisitor
+		Inherits AbstractAstVisitor
+		Private namespaceDeclarations As New Stack(Of CodeNamespace)()
+		Private typeDeclarations As New Stack(Of CodeTypeDeclaration)()
+
+		' dummy collection used to swallow statements
+		Private NullStmtCollection As New CodeStatementCollection()
+
+		Public codeCompileUnit As New CodeCompileUnit()
+
+		Private Function ConvType(ByVal type As TypeReference) As CodeTypeReference
+			If type Is Nothing Then
+				Throw New ArgumentNullException("type")
+			End If
+			If String.IsNullOrEmpty(type.SystemType) Then
+				Throw New InvalidOperationException("empty type")
+			End If
+
+			Dim t As New CodeTypeReference(type.SystemType)
+			For Each gt As TypeReference In type.GenericTypes
+				t.TypeArguments.Add(ConvType(gt))
+			Next
+			If type.IsArrayType Then
+				t = New CodeTypeReference(t, type.RankSpecifier.Length)
+			End If
+
+			Return t
+		End Function
+
+		' FIXME: map all modifiers correctly
+		Private Shared Function ConvMemberAttributes(ByVal modifier As Modifiers) As MemberAttributes
+			Dim attr As MemberAttributes = DirectCast(0, MemberAttributes)
+
+			If (modifier And Modifiers.Abstract) <> 0 Then
+				attr = attr Or MemberAttributes.Abstract
+			End If
+			If (modifier And Modifiers.[Const]) <> 0 Then
+				attr = attr Or MemberAttributes.[Const]
+			End If
+			If (modifier And Modifiers.Sealed) <> 0 Then
+				attr = attr Or MemberAttributes.Final
+			End If
+			If (modifier And Modifiers.[New]) <> 0 Then
+				attr = attr Or MemberAttributes.[New]
+			End If
+			If (modifier And Modifiers.Virtual) <> 0 Then
+				attr = attr Or MemberAttributes.Overloaded
+			End If
+			If (modifier And Modifiers.Override) <> 0 Then
+				attr = attr Or MemberAttributes.Override
+			End If
+			If (modifier And Modifiers.[Static]) <> 0 Then
+				attr = attr Or MemberAttributes.[Static]
+			End If
+
+			If (modifier And Modifiers.[Private]) <> 0 Then
+				attr = attr Or MemberAttributes.[Private]
+ElseIf (modifier And Modifiers.[Public]) <> 0 Then
+				attr = attr Or MemberAttributes.[Public]
+ElseIf (modifier And Modifiers.Internal) <> 0 AndAlso (modifier And Modifiers.[Protected]) <> 0 Then
+				attr = attr Or MemberAttributes.FamilyOrAssembly
+ElseIf (modifier And Modifiers.Internal) <> 0 Then
+				attr = attr Or MemberAttributes.Assembly
+ElseIf (modifier And Modifiers.[Protected]) <> 0 Then
+				attr = attr Or MemberAttributes.Family
+			End If
+
+			Return attr
+		End Function
+
+
+		Public Overloads Overrides Function VisitCompilationUnit(ByVal compilationUnit As CompilationUnit, ByVal data As Object) As Object
+			If compilationUnit Is Nothing Then
+				Throw New ArgumentNullException("compilationUnit")
+			End If
+			Dim globalNamespace As New CodeNamespace("Global")
+			'namespaces.Add(globalNamespace);
+			namespaceDeclarations.Push(globalNamespace)
+			compilationUnit.AcceptChildren(Me, data)
+			codeCompileUnit.Namespaces.Add(globalNamespace)
+			Return globalNamespace
+		End Function
+
+		Public Overloads Overrides Function VisitNamespaceDeclaration(ByVal namespaceDeclaration As NamespaceDeclaration, ByVal data As Object) As Object
+			Dim currentNamespace As New CodeNamespace(namespaceDeclaration.Name)
+			'namespaces.Add(currentNamespace);
+			' add imports from mother namespace
+			For Each import As CodeNamespaceImport In DirectCast(namespaceDeclarations.Peek(), CodeNamespace).[Imports]
+				currentNamespace.[Imports].Add(import)
+			Next
+			namespaceDeclarations.Push(currentNamespace)
+			namespaceDeclaration.AcceptChildren(Me, data)
+			namespaceDeclarations.Pop()
+			codeCompileUnit.Namespaces.Add(currentNamespace)
+
+			' TODO : Nested namespaces allowed in CodeDOM ? Doesn't seem so :(
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitUsingDeclaration(ByVal usingDeclaration As UsingDeclaration, ByVal data As Object) As Object
+			For Each u As [Using] In usingDeclaration.Usings
+				namespaceDeclarations.Peek().[Imports].Add(New CodeNamespaceImport(u.Name))
+			Next
+			Return Nothing
+		End Function
+
+
+		Public Overloads Overrides Function VisitAttributeSection(ByVal attributeSection As AttributeSection, ByVal data As Object) As Object
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitTypeDeclaration(ByVal typeDeclaration As TypeDeclaration, ByVal data As Object) As Object
+			Dim oldTypeDeclaration As TypeDeclaration = currentTypeDeclaration
+			Me.currentTypeDeclaration = typeDeclaration
+			Dim codeTypeDeclaration As New CodeTypeDeclaration(typeDeclaration.Name)
+			codeTypeDeclaration.IsClass = typeDeclaration.Type = ClassType.[Class]
+			codeTypeDeclaration.IsEnum = typeDeclaration.Type = ClassType.[Enum]
+			codeTypeDeclaration.IsInterface = typeDeclaration.Type = ClassType.[Interface]
+			codeTypeDeclaration.IsStruct = typeDeclaration.Type = ClassType.Struct
+
+			If typeDeclaration.BaseTypes IsNot Nothing Then
+				For Each typeRef As TypeReference In typeDeclaration.BaseTypes
+					codeTypeDeclaration.BaseTypes.Add(ConvType(typeRef))
+				Next
+			End If
+
+			typeDeclarations.Push(codeTypeDeclaration)
+			typeDeclaration.AcceptChildren(Me, data)
+			typeDeclarations.Pop()
+
+			If typeDeclarations.Count > 0 Then
+				typeDeclarations.Peek().Members.Add(codeTypeDeclaration)
+			Else
+				namespaceDeclarations.Peek().Types.Add(codeTypeDeclaration)
+			End If
+			currentTypeDeclaration = oldTypeDeclaration
+
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitDelegateDeclaration(ByVal delegateDeclaration As DelegateDeclaration, ByVal data As Object) As Object
+			'			CodeTypeDelegate codeTypeDelegate = new CodeTypeDelegate(delegateDeclaration.Name);
+			'			codeTypeDelegate.Parameters
+			'
+			'			((CodeNamespace)namespaceDeclarations.Peek()).Types.Add(codeTypeDelegate);
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitVariableDeclaration(ByVal variableDeclaration As VariableDeclaration, ByVal data As Object) As Object
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitFieldDeclaration(ByVal fieldDeclaration As FieldDeclaration, ByVal data As Object) As Object
+			For i As Integer = 0 To fieldDeclaration.Fields.Count - 1
+				Dim field As VariableDeclaration = DirectCast(fieldDeclaration.Fields(i), VariableDeclaration)
+
+						'this.withEventsFields.Add(field);
+				If (fieldDeclaration.Modifier And Modifiers.[WithEvents]) <> 0 Then
+				End If
+				Dim fieldType As TypeReference = fieldDeclaration.GetTypeForField(i)
+
+				If fieldType.IsNull Then
+					fieldType = New TypeReference(typeDeclarations.Peek().Name)
+				End If
+
+				Dim memberField As New CodeMemberField(ConvType(fieldType), field.Name)
+				memberField.UserData("StartLocation") = field.StartLocation.Line
+				memberField.UserData("EndLocation") = field.EndLocation.Line
+				memberField.Attributes = ConvMemberAttributes(fieldDeclaration.Modifier)
+				If Not field.Initializer.IsNull Then
+					memberField.InitExpression = DirectCast(field.Initializer.AcceptVisitor(Me, data), CodeExpression)
+				End If
+
+				typeDeclarations.Peek().Members.Add(memberField)
+			Next
+
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitMethodDeclaration(ByVal methodDeclaration As MethodDeclaration, ByVal data As Object) As Object
+			Dim memberMethod As New CodeMemberMethod()
+			memberMethod.Name = methodDeclaration.Name
+			memberMethod.Attributes = ConvMemberAttributes(methodDeclaration.Modifier)
+			memberMethod.UserData("StartLocation") = methodDeclaration.StartLocation.Line
+			memberMethod.UserData("EndLocation") = methodDeclaration.EndLocation.Line
+			If methodDeclaration.Body IsNot Nothing AndAlso Not (TypeOf methodDeclaration.Body Is NullBlockStatement) Then
+				memberMethod.UserData("EndLocation") = methodDeclaration.Body.EndLocation.Line
+			End If
+
+			'codeStack.Push(memberMethod.Statements);
+
+			typeDeclarations.Peek().Members.Add(memberMethod)
+
+			' Add Method Parameters
+			For Each parameter As ParameterDeclarationExpression In methodDeclaration.Parameters
+				memberMethod.Parameters.Add(DirectCast(VisitParameterDeclarationExpression(parameter, data), CodeParameterDeclarationExpression))
+			Next
+
+			'variables.Clear();
+			'methodDeclaration.Body.AcceptChildren(this, data);
+
+			'codeStack.Pop();
+
+			Return Nothing
+		End Function
+		Public Overloads Overrides Function VisitEventDeclaration(ByVal eventDeclaration As EventDeclaration, ByVal data As Object) As Object
+			Dim memberMethod As New CodeMemberEvent()
+			memberMethod.Name = eventDeclaration.Name
+			memberMethod.Attributes = ConvMemberAttributes(eventDeclaration.Modifier)
+			memberMethod.UserData("StartLocation") = eventDeclaration.StartLocation.Line
+			memberMethod.UserData("EndLocation") = eventDeclaration.EndLocation.Line
+			typeDeclarations.Peek().Members.Add(memberMethod)
+
+			' Add Method Parameters
+			'foreach (ParameterDeclarationExpression parameter in eventDeclaration.Parameters)
+			'{
+			'    memberMethod.Parameters.Add((CodeParameterDeclarationExpression)VisitParameterDeclarationExpression(parameter, data));
+			'}
+			Return Nothing
+		End Function
+		Public Overloads Overrides Function VisitPropertyDeclaration(ByVal propertyDeclaration As PropertyDeclaration, ByVal data As Object) As Object
+			Dim memberMethod As New CodeMemberProperty()
+			memberMethod.Name = propertyDeclaration.Name
+			memberMethod.Attributes = ConvMemberAttributes(propertyDeclaration.Modifier)
+			memberMethod.UserData("StartLocation") = propertyDeclaration.StartLocation.Line
+			memberMethod.UserData("EndLocation") = propertyDeclaration.BodyEnd.Line
+			typeDeclarations.Peek().Members.Add(memberMethod)
+
+			' Add Method Parameters
+			For Each parameter As ParameterDeclarationExpression In propertyDeclaration.Parameters
+				memberMethod.Parameters.Add(DirectCast(VisitParameterDeclarationExpression(parameter, data), CodeParameterDeclarationExpression))
+			Next
+			Return Nothing
+		End Function
+		Public Overloads Overrides Function VisitConstructorDeclaration(ByVal constructorDeclaration As ConstructorDeclaration, ByVal data As Object) As Object
+			Dim memberMethod As CodeMemberMethod = New CodeConstructor()
+
+			'codeStack.Push(memberMethod.Statements);
+			typeDeclarations.Peek().Members.Add(memberMethod)
+			'constructorDeclaration.Body.AcceptChildren(this, data);
+			'codeStack.Pop();
+			For Each parameter As ParameterDeclarationExpression In constructorDeclaration.Parameters
+				memberMethod.Parameters.Add(DirectCast(VisitParameterDeclarationExpression(parameter, data), CodeParameterDeclarationExpression))
+			Next
+
+			Return Nothing
+		End Function
+
+		Public Overloads Overrides Function VisitParameterDeclarationExpression(ByVal parameterDeclarationExpression As ParameterDeclarationExpression, ByVal data As Object) As Object
+			Return New CodeParameterDeclarationExpression(ConvType(parameterDeclarationExpression.TypeReference), parameterDeclarationExpression.ParameterName)
+		End Function
+
+	End Class
+End Namespace
+</pre>
+<!-- InstanceEndEditable -->
+<div class="block-box">Block after.</div>
+</div>
+</div>
+
+<div class="footer">
+Copyright 2004-2007 Alex Gorbatchev.<br/>
+</div>
+
+<script class="javascript" src="../Scripts/shCore.js"></script>
+<script class="javascript" src="../Scripts/shBrushCSharp.js"></script>
+<script class="javascript" src="../Scripts/shBrushPhp.js"></script>
+<script class="javascript" src="../Scripts/shBrushJScript.js"></script>
+<script class="javascript" src="../Scripts/shBrushJava.js"></script>
+<script class="javascript" src="../Scripts/shBrushVb.js"></script>
+<script class="javascript" src="../Scripts/shBrushSql.js"></script>
+<script class="javascript" src="../Scripts/shBrushXml.js"></script>
+<script class="javascript" src="../Scripts/shBrushDelphi.js"></script>
+<script class="javascript" src="../Scripts/shBrushPython.js"></script>
+<script class="javascript" src="../Scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../Scripts/shBrushCss.js"></script>
+<script class="javascript" src="../Scripts/shBrushCpp.js"></script>
+<script class="javascript">
+if(window.isBloggerMode == true)
+	dp.SyntaxHighlighter.BloggerMode();
+
+dp.SyntaxHighlighter.ClipboardSwf = 'Scripts/clipboard.swf';
+dp.SyntaxHighlighter.HighlightAll('code');
+</script>
+
+</body>
+<!-- InstanceEnd --></html>

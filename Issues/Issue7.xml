@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<?xml-stylesheet type="text/xsl" href="XslTest.xsl"?>
+<?xml-stylesheet type="text/xsl" href="Issue7.xsl"?>
 <test>
 x = 42 % 3
 print "hello", x

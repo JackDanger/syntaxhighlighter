@@ -13,6 +13,12 @@ h1 { font-size: 200%; border-bottom: 5px solid #f0f0f0; padding-bottom: 5px; fon
 h2 { font-size: 150%; margin-left: 20%; }
 h3 { font-size: 120%; }
 
+div.block-box {
+	color: #999;
+	background-color: #FFCCCC;
+	display: none;
+}
+
 li a
 {
 	color: blue;

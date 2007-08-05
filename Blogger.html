@@ -9,10 +9,10 @@
 
 <body>
 
-<h1>dp.SyntaxHighlighter 1.5.0 Tests and Samples</h1>
+<h1>dp.SyntaxHighlighter 1.5.1 Tests and Samples</h1>
 <p><a href="http://code.google.com/p/syntaxhighlighter/">http://code.google.com/p/syntaxhighlighter/</a></p>
 
-<h2><!-- InstanceBeginEditable name="Title" -->Title<!-- InstanceEndEditable --></h2>
+<h2><!-- InstanceBeginEditable name="Title" -->Blogger Integration<!-- InstanceEndEditable --></h2>
 
 <div class="layout">
 
@@ -38,31 +38,45 @@
 		<li><a href="FirstLine.html">First line</a> </li>
 		<li><a href="CollapseCode.html">Expand code</a></li>
 		<li><a href="ShowColumns.html">Show columns</a></li>
+		<li><a href="Blogger.html">Blogger integration</a></li>
 		<li><a href="NoGutter.html">No gutter</a></li>
 		<li><a href="NoControls.html">No controls</a></li>
 	</ol>
-	<h3>Additional tests:</h3>
+	<h3>Issues:</h3>
 	<ol>
-		<li><a href="XslTest.xml">XSL transformation</a></li>
-		<li><a href="Blogger.html">Blogger</a></li>
-		<li><a href="NoMatches.html">No matches</a></li>
+		<li><a href="Issues/Issue7.xml">#7, XSL transformation</a></li>
+		<li><a href="Issues/Issue15.html">#15, Incorrect single quote</a></li>
+		<li><a href="Issues/Issue10.html">#10, VB crash</a></li>
+		<li><a href="Issues/Issue19.html">#19, No matches</a></li>
 	</ol>
 </div>
 
 <div class="column2">
-Text body before.
-<hr/>
+<div class="block-box">Block before.</div>
 <!-- InstanceBeginEditable name="Code" -->
+<p>Blogger has a nasty habbit of replacing all new lines with &lt;br/> tags which makes it impossible to post code snippets.</p>
+<p>To fix the situation version 1.5.1 introduces "Blogger Mode" which can be enabled before a call to HighlightAll() by a call to BloggerMode() like in the example below:</p>
+<pre name="code" class="js">
+dp.SyntaxHighlighter.BloggerMode();
+dp.SyntaxHighlighter.HighlightAll('code');
+</pre>
 <script type="text/javascript">
 window.isBloggerMode = true;
 </script>
+
+<p>Here's the code as posted by Blogger:</p>
+
+<code>
+&lt;script type='text/javascript'>&lt;br />_WidgetManager._Init=function(){};&lt;br />_WidgetManager._SetPageActionUrl=function(){};&lt;br />_WidgetManager._SetDataContext=function(){};&lt;br />_WidgetManager._SetSystemMarkup=function(){};&lt;br />_WidgetManager._RegisterWidget=function(){};&lt;br />&lt;/script>
+</code>
+
+<p>Here's the highlighted result:</p>
 
 <pre name="code" class="js">
 &lt;script type='text/javascript'><br />_WidgetManager._Init=function(){};<br />_WidgetManager._SetPageActionUrl=function(){};<br />_WidgetManager._SetDataContext=function(){};<br />_WidgetManager._SetSystemMarkup=function(){};<br />_WidgetManager._RegisterWidget=function(){};<br />&lt;/script>
 </pre>
 <!-- InstanceEndEditable -->
-<hr/>
-Text body after.
+<div class="block-box">Block after.</div>
 </div>
 </div>
 
