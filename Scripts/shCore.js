@@ -659,8 +659,24 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		highlighter.showColumns = (showColumns == null) ? IsOptionSet('showcolumns', options) : showColumns;
 
 		// write out custom brush style
-		if(highlighter.Style)
-			document.write('<style>' + highlighter.Style + '</style>');
+		var headNode = document.getElementsByTagName('head')[0];
+		if(highlighter.Style && headNode)
+		{
+			var styleNode = document.createElement('style');
+			styleNode.setAttribute('type', 'text/css');
+
+			if(styleNode.styleSheet) // for IE
+			{
+				styleNode.styleSheet.cssText = highlighter.Style;
+			}
+			else // for everyone else
+			{
+				var textNode = document.createTextNode(highlighter.Style);
+				styleNode.appendChild(textNode);
+			}
+
+			headNode.appendChild(styleNode);
+		}
 		
 		// first line idea comes from Andrew Collington, thanks!
 		highlighter.firstLine = (firstLine == null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;

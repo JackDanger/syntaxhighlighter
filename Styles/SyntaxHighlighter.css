@@ -9,6 +9,25 @@
 	padding-top: 1px; /* adds a little border on top when controls are hidden */
 }
 
+/* clear styles */
+.dp-highlighter ol,
+.dp-highlighter ol li,
+.dp-highlighter ol li span 
+{
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.dp-highlighter a,
+.dp-highlighter a:hover
+{
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
 .dp-highlighter .bar
 {
 	padding-left: 45px;
@@ -65,7 +84,7 @@
 
 .dp-highlighter ol li.alt 
 {
-	background-color: #fff; 
+	background-color: #fff;
 }
 
 .dp-highlighter ol li span 
@@ -110,7 +129,6 @@
 	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: silver;
 	background-color: #f8f8f8;
-	text-align1: right;
 	padding-bottom: 10px;
 	border-left: 3px solid #6CE26C;
 }
@@ -131,6 +149,7 @@
 	color: #a0a0a0;
 	text-decoration: none;
 	margin-right: 10px;
+	bakcground-color: none;
 }
 
 .dp-highlighter .tools a:hover
