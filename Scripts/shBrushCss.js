@@ -4,14 +4,14 @@ dp.sh.Brushes.CSS = function()
 					'background-repeat background baseline bbox border-collapse border-color border-spacing border-style border-top ' +
 					'border-right border-bottom border-left border-top-color border-right-color border-bottom-color border-left-color ' +
 					'border-top-style border-right-style border-bottom-style border-left-style border-top-width border-right-width ' +
-					'border-bottom-width border-left-width border-width border bottom cap-height caption-side centerline clear clip color ' +
+					'border-bottom-width border-left-width border-width border cap-height caption-side centerline clear clip color ' +
 					'content counter-increment counter-reset cue-after cue-before cue cursor definition-src descent direction display ' +
 					'elevation empty-cells float font-size-adjust font-family font-size font-stretch font-style font-variant font-weight font ' +
 					'height letter-spacing line-height list-style-image list-style-position list-style-type list-style margin-top ' +
 					'margin-right margin-bottom margin-left margin marker-offset marks mathline max-height max-width min-height min-width orphans ' +
 					'outline-color outline-style outline-width outline overflow padding-top padding-right padding-bottom padding-left padding page ' +
 					'page-break-after page-break-before page-break-inside pause pause-after pause-before pitch pitch-range play-during position ' +
-					'quotes richness right size slope src speak-header speak-numeral speak-punctuation speak speech-rate stemh stemv stress ' +
+					'quotes richness size slope src speak-header speak-numeral speak-punctuation speak speech-rate stemh stemv stress ' +
 					'table-layout text-align text-decoration text-indent text-shadow text-transform unicode-bidi unicode-range units-per-em ' +
 					'vertical-align visibility voice-family volume white-space widows width widths word-spacing x-height z-index important';
 
