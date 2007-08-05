@@ -12,7 +12,7 @@
 <h1>dp.SyntaxHighlighter 1.5.0 Tests and Samples</h1>
 <p><a href="http://code.google.com/p/syntaxhighlighter/">http://code.google.com/p/syntaxhighlighter/</a></p>
 
-<h2><!-- InstanceBeginEditable name="Title" -->Crash Test<!-- InstanceEndEditable --></h2>
+<h2><!-- InstanceBeginEditable name="Title" -->No matches<!-- InstanceEndEditable --></h2>
 
 <div class="layout">
 
@@ -53,34 +53,9 @@
 Text body before.
 <hr/>
 <!-- InstanceBeginEditable name="Code" -->
+Test for <a href="http://code.google.com/p/syntaxhighlighter/issues/detail?id=19">issue #19</a>. Must display toolbar.
 <pre name="code" class="js">
-// SINGLE QUOTE ' HANGS
-// retrouver la publication à partir de l`idagence / id type publication   ---  in this line makes it crash
-if (iIdPublication == 0 && iIdTypePublication != 0 && iIdAgence != 0) {
-    sStmtA = "SELECT idpublication "
-    + " FROM table1 WITH(NOLOCK) "
-    + " WHERE idagence = " + iIdAgence
-    + " AND idtypepublication = " + iIdTypePublication;
-    using (Sql sql = new Sql("bc", "immobc"))
-        iIdPublication = F.ForceInt(sql.ExecScalar(sStmtA));
-}
-
-// alertes pour une publication donnée
-if(iIdPublication != 0) {
-    using(Sql oSql = new Sql("aboemail")) {
-        sStmt = "SELECT table1.*, table3.*, table2.month, table2.year, "
-        + " table2.nbsends as nbsends2 "
-        + " FROM table1 WITH(NOLOCK) "
-        + " LEFT JOIN table2 WITH(NOLOCK) ON table1.idabo_email=table2.idabo_email "
-        + " INNER JOIN table3 WITH(NOLOCK) ON table1.idabotypeaction = table3.idabotypeaction "
-        + " WHERE idpublication = " + iIdPublication + sWhereSup
-        + " ORDER BY table1.idabo_email, table2.year DESC, table2.month DESC";
-        oDS=oSql.ExecCached(sStmt);
-    }
-}
-//Mail.SendMail("glop@glop.com","glop@glop.com","abo",sStmtP + " " + sStmtA + " " + sStmt,false);
-string[] AMonths = new string[12] { "Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre" };
-DicContext["AMonths"] = AMonths;
+-------
 </pre>
 <!-- InstanceEndEditable -->
 <hr/>

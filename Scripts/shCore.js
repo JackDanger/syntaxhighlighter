@@ -520,6 +520,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 	{
 		this.AddBit(this.code, null);
 		this.SwitchToList();
+		this.div.appendChild(this.bar);
 		this.div.appendChild(this.ol);
 		return;
 	}
