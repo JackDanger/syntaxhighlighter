@@ -13,7 +13,7 @@ dp.sh.Brushes.CSS = function()
 					'page-break-after page-break-before page-break-inside pause pause-after pause-before pitch pitch-range play-during position ' +
 					'quotes richness size slope src speak-header speak-numeral speak-punctuation speak speech-rate stemh stemv stress ' +
 					'table-layout text-align text-decoration text-indent text-shadow text-transform unicode-bidi unicode-range units-per-em ' +
-					'vertical-align visibility voice-family volume white-space widows width widths word-spacing x-height z-index important';
+					'vertical-align visibility voice-family volume white-space widows width widths word-spacing x-height z-index';
 
 	var values =	'above absolute all always aqua armenian attr aural auto avoid baseline behind below bidi-override black blink block blue bold bolder '+
 					'both bottom braille capitalize caption center center-left center-right circle close-quote code collapse compact condensed '+
@@ -33,19 +33,31 @@ dp.sh.Brushes.CSS = function()
 	var fonts =		'[mM]onospace [tT]ahoma [vV]erdana [aA]rial [hH]elvetica [sS]ans-serif [sS]erif';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comment' },	// multiline comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },	// double quoted strings
-		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },	// single quoted strings
-		{ regex: new RegExp('\\#[a-zA-Z0-9]{3,6}', 'g'),			css: 'colors' },	// html colors
-		{ regex: new RegExp('(\\d+)(px|pt|\:)', 'g'),				css: 'string' },	// size specifications
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),		css: 'keyword' },	// keywords
-		{ regex: new RegExp(this.GetKeywords(values), 'g'),			css: 'string' },	// values
-		{ regex: new RegExp(this.GetKeywords(fonts), 'g'),			css: 'string' }		// fonts
+		{ regex: dp.sh.RegexLib.MultiLineCComments,						css: 'comment' },	// multiline comments
+		{ regex: dp.sh.RegexLib.DoubleQuotedString,						css: 'string' },	// double quoted strings
+		{ regex: dp.sh.RegexLib.SingleQuotedString,						css: 'string' },	// single quoted strings
+		{ regex: new RegExp('\\#[a-zA-Z0-9]{3,6}', 'g'),				css: 'value' },		// html colors
+		{ regex: new RegExp('(-?\\d+)(\.\\d+)?(px|em|pt|\:|\%|)', 'g'),	css: 'value' },		// sizes
+		{ regex: new RegExp('!important', 'g'),							css: 'important' },	// !important
+		{ regex: new RegExp(this.GetKeywordsCSS(keywords), 'gm'),		css: 'keyword' },	// keywords
+		{ regex: new RegExp(this.GetValuesCSS(values), 'g'),			css: 'value' },		// values
+		{ regex: new RegExp(this.GetValuesCSS(fonts), 'g'),				css: 'value' }		// fonts
 		];
 
 	this.CssClass = 'dp-css';
-	this.Style =	'.dp-css .colors { color: darkred; }' +
-					'.dp-css .vars { color: #d00; }';
+	this.Style =	'.dp-css .value { color: black; }' +
+					'.dp-css .important { color: red; }'
+					;
+}
+
+dp.sh.Highlighter.prototype.GetKeywordsCSS = function(str)
+{
+	return '\\b([a-z_]|)' + str.replace(/ /g, '(?=:)\\b|\\b([a-z_\\*]|\\*|)') + '(?=:)\\b';
+}
+
+dp.sh.Highlighter.prototype.GetValuesCSS = function(str)
+{
+	return '\\b' + str.replace(/ /g, '(?!-)(?!:)\\b|\\b()') + '\:\\b';
 }
 
 dp.sh.Brushes.CSS.prototype	= new dp.sh.Highlighter();
