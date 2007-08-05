@@ -34,8 +34,8 @@ dp.sh.Brushes.Xml.prototype.ProcessRegexList = function()
 	this.GetMatches(new RegExp('(\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\&gt;|>)', 'gm'), 'cdata');
 	
 	// Match comments
-	// (\&lt;|<)!--\s*.*\s*?--(\&gt;|>)
-	this.GetMatches(new RegExp('(\&lt;|<)!--\\s*.*\\s*?--(\&gt;|>)', 'gm'), 'comments');
+	// (\&lt;|<)!--\s*.*?\s*--(\&gt;|>)
+	this.GetMatches(new RegExp('(\&lt;|<)!--\\s*.*?\\s*--(\&gt;|>)', 'gm'), 'comments');
 
 	// Match attributes and their values
 	// (:|\w+)\s*=\s*(".*?"|\'.*?\'|\w+)*
