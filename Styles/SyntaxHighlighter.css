@@ -48,10 +48,11 @@
 	color: #5C5C5C;
 }
 
-.dp-highlighter.nogutter ol
+.dp-highlighter.nogutter ol,
+.dp-highlighter.nogutter ol li
 {
-	list-style-type: none !important;
-	margin-left: 0px;
+	list-style: none !important;
+	margin-left: 0px !important;
 }
 
 .dp-highlighter ol li,
