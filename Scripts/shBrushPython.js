@@ -15,7 +15,7 @@ dp.sh.Brushes.Python = function()
         { regex: new RegExp("'(?!')*(?:\\.|(\\\\\\')|[^\\''\\n\\r])*'", 'gm'), css: 'string' },
         { regex: new RegExp("\\b\\d+\\.?\\w*", 'g'), css: 'number' },
         { regex: new RegExp(this.GetKeywords(keywords), 'gm'), css: 'keyword' },
-        { regex: new RegExp(this.GetKeywords(special), 'gm'), css: 'special' },
+        { regex: new RegExp(this.GetKeywords(special), 'gm'), css: 'special' }
         ];
 
     this.CssClass = 'dp-py';
