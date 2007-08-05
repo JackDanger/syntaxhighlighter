@@ -52,6 +52,14 @@ Text body before.
 <hr/>
 <!-- InstanceBeginEditable name="Code" -->
 <pre name="code" class="js">
+/* Test case for issue #15 (http://code.google.com/p/syntaxhighlighter/issues/detail?id=15) */
+// This comment has a ' character.
+line_ok();
+a_string = 'hello';
+line_bad();
+// This comment has a ' character.
+/* end */
+
 /***********************************
  ** Multiline block comments
  **********************************/
