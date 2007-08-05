@@ -72,6 +72,10 @@ dp.sh.Toolbar.Commands = {
 		{
 			var code = highlighter.originalCode;
 			
+			code = code.replace(/&lt;/g,'<');
+			code = code.replace(/&gt;/g,'>');
+			code = code.replace(/&amp;/g,'&');
+			
 			if(window.clipboardData)
 			{
 				window.clipboardData.setData('text', code);
