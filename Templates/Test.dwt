@@ -37,9 +37,9 @@
 		<li><a href="../SmartTabs.html">Smart tabs</a></li>
 		<li><a href="../FirstLine.html">First line</a> </li>
 		<li><a href="../CollapseCode.html">Expand code</a></li>
-	    <li><a href="../ShowColumns.html">Show columns</a></li>
-	    <li><a href="../NoGutter.html">No gutter</a></li>
-	    <li><a href="../NoControls.html">No controls</a></li>
+		<li><a href="../ShowColumns.html">Show columns</a></li>
+		<li><a href="../NoGutter.html">No gutter</a></li>
+		<li><a href="../NoControls.html">No controls</a></li>
 	</ol>
 	<h3>Additional tests:</h3>
 	<ol>
