@@ -36,7 +36,7 @@ dp.sh.Brushes.Sql = function()
 	this.CssClass = 'dp-sql';
 	this.Style =	'.dp-sql .func { color: #ff1493; }' +
 					'.dp-sql .op { color: #808080; }';
-}
+};
 
 dp.sh.Brushes.Sql.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Sql.Aliases	= ['sql'];

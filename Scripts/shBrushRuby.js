@@ -7,7 +7,7 @@ dp.sh.Brushes.Ruby = function()
 
   var builtins =	'Array Bignum Binding Class Continuation Dir Exception FalseClass File::Stat File Fixnum Fload ' +
 					'Hash Integer IO MatchData Method Module NilClass Numeric Object Proc Range Regexp String Struct::TMS Symbol ' +
-					'ThreadGroup Thread Time TrueClass'
+					'ThreadGroup Thread Time TrueClass';
 
 	this.regexList = [
 		{ regex: dp.sh.RegexLib.SingleLinePerlComments,			css: 'comment' },	// one line comments
@@ -22,7 +22,7 @@ dp.sh.Brushes.Ruby = function()
 	this.CssClass = 'dp-rb';
 	this.Style =	'.dp-rb .symbol { color: #a70; }' +
 					'.dp-rb .variable { color: #a70; font-weight: bold; }';
-}
+};
 
 dp.sh.Brushes.Ruby.prototype = new dp.sh.Highlighter();
 dp.sh.Brushes.Ruby.Aliases = ['ruby', 'rails', 'ror'];

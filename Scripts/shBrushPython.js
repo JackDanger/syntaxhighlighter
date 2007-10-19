@@ -5,7 +5,7 @@ dp.sh.Brushes.Python = function()
                     'except exec finally for from global if import in is ' +
                     'lambda not or pass print raise return try yield while';
 
-    var special =  'None True False self cls class_'
+    var special =  'None True False self cls class_';
 
     this.regexList = [
         { regex: dp.sh.RegexLib.SingleLinePerlComments, css: 'comment' },
@@ -24,7 +24,7 @@ dp.sh.Brushes.Python = function()
 					'.dp-py .exceptions { color: brown; }' +
 					'.dp-py .types { color: brown; font-style: italic; }' +
 					'.dp-py .commonlibs { color: #8A2BE2; font-style: italic; }';
-}
+};
 
 dp.sh.Brushes.Python.prototype  = new dp.sh.Highlighter();
 dp.sh.Brushes.Python.Aliases    = ['py', 'python'];

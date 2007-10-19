@@ -67,7 +67,7 @@ dp.sh.Brushes.Cpp = function()
 
 	this.CssClass = 'dp-cpp';
 	this.Style =	'.dp-cpp .datatypes { color: #2E8B57; font-weight: bold; }';
-}
+};
 
 dp.sh.Brushes.Cpp.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Cpp.Aliases	= ['cpp', 'c', 'c++'];

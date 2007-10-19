@@ -46,19 +46,18 @@ dp.sh.Brushes.CSS = function()
 
 	this.CssClass = 'dp-css';
 	this.Style =	'.dp-css .value { color: black; }' +
-					'.dp-css .important { color: red; }'
-					;
-}
+					'.dp-css .important { color: red; }';
+};
 
 dp.sh.Highlighter.prototype.GetKeywordsCSS = function(str)
 {
 	return '\\b([a-z_]|)' + str.replace(/ /g, '(?=:)\\b|\\b([a-z_\\*]|\\*|)') + '(?=:)\\b';
-}
+};
 
 dp.sh.Highlighter.prototype.GetValuesCSS = function(str)
 {
 	return '\\b' + str.replace(/ /g, '(?!-)(?!:)\\b|\\b()') + '\:\\b';
-}
+};
 
 dp.sh.Brushes.CSS.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.CSS.Aliases	= ['css'];

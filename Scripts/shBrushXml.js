@@ -5,7 +5,7 @@ dp.sh.Brushes.Xml = function()
 					'.dp-xml .tag, .dp-xml .tag-name { color: #069; font-weight: bold; }' +
 					'.dp-xml .attribute { color: red; }' +
 					'.dp-xml .attribute-value { color: blue; }';
-}
+};
 
 dp.sh.Brushes.Xml.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Xml.Aliases	= ['xml', 'xhtml', 'xslt', 'html', 'xhtml'];
