@@ -262,7 +262,7 @@ dp.sh.Highlighter.prototype.GetMatches = function(regex, css)
 
 dp.sh.Highlighter.prototype.AddBit = function(str, css)
 {
-	if(str === null || str.length == 0)
+	if(str === null || str.length === 0)
 		return;
 
 	var span = this.CreateElement('SPAN');
@@ -312,7 +312,7 @@ dp.sh.Highlighter.prototype.AddBit = function(str, css)
 // checks if one match is inside any other match
 dp.sh.Highlighter.prototype.IsInside = function(match)
 {
-	if(match === null || match.length == 0)
+	if(match === null || match.length === 0)
 		return false;
 	
 	for(var i = 0; i < this.matches.length; i++)
@@ -403,7 +403,7 @@ dp.sh.Highlighter.prototype.SwitchToList = function()
 		
 		while(i <= 150)
 		{
-			if(i % showEvery == 0)
+			if(i % showEvery === 0)
 			{
 				div.innerHTML += i;
 				i += (i + '').length;
@@ -426,7 +426,7 @@ dp.sh.Highlighter.prototype.SwitchToList = function()
 		var span = this.CreateElement('SPAN');
 		
 		// uses .line1 and .line2 css styles for alternating lines
-		li.className = (i % 2 == 0) ? 'alt' : '';
+		li.className = (i % 2 === 0) ? 'alt' : '';
 		span.innerHTML = lines[i] + '&nbsp;';
 
 		li.appendChild(span);
@@ -458,7 +458,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 		// go through every line and check for common number of indents
 		for(var i = 0; i < lines.length && min > 0; i++)
 		{
-			if(Trim(lines[i]).length == 0)
+			if(Trim(lines[i]).length === 0)
 				continue;
 				
 			var matches = regex.exec(lines[i]);
@@ -517,7 +517,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 	this.ProcessRegexList();	
 
 	// if no matches found, add entire code as plain text
-	if(this.matches.length == 0)
+	if(this.matches.length === 0)
 	{
 		this.AddBit(this.code, null);
 		this.SwitchToList();
@@ -542,7 +542,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 	{
 		var match = this.matches[i];
 
-		if(match === null || match.length == 0)
+		if(match === null || match.length === 0)
 			continue;
 
 		this.AddBit(Copy(this.code, pos, match.index), null);
@@ -629,7 +629,7 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 	FindTagsByName(elements, name, 'pre');
 	FindTagsByName(elements, name, 'textarea');
 
-	if(elements.length == 0)
+	if(elements.length === 0)
 		return;
 
 	// register all brushes
