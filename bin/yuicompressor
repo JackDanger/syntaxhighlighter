@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+## Until it's handed to YUI, the latest version is at:
+## http://www.julienlecomte.net/yuicompressor/
+
+JAR=$(ls -1 "$(dirname $(realpath $0))"/share/yuicompressor-*.jar | sort -n | tail -n1)
+
+java -jar "${JAR}" "$@"
+
+#EOF
