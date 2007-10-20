@@ -85,7 +85,7 @@ dp.sh.Toolbar.Commands = {
 			{
 				var flashcopier = highlighter.flashCopier;
 				
-				if(flashcopier == null)
+				if(flashcopier === null)
 				{
 					flashcopier = document.createElement('div');
 					highlighter.flashCopier = flashcopier;
@@ -262,7 +262,7 @@ dp.sh.Highlighter.prototype.GetMatches = function(regex, css)
 
 dp.sh.Highlighter.prototype.AddBit = function(str, css)
 {
-	if(str == null || str.length == 0)
+	if(str === null || str.length == 0)
 		return;
 
 	var span = this.CreateElement('SPAN');
@@ -312,14 +312,14 @@ dp.sh.Highlighter.prototype.AddBit = function(str, css)
 // checks if one match is inside any other match
 dp.sh.Highlighter.prototype.IsInside = function(match)
 {
-	if(match == null || match.length == 0)
+	if(match === null || match.length == 0)
 		return false;
 	
 	for(var i = 0; i < this.matches.length; i++)
 	{
 		var c = this.matches[i];
 		
-		if(c == null)
+		if(c === null)
 			continue;
 
 		if((match.index > c.index) && (match.index < c.index + c.length))
@@ -483,7 +483,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 
 	var pos	= 0;
 	
-	if(code == null)
+	if(code === null)
 		code = '';
 	
 	this.originalCode = code;
@@ -542,7 +542,7 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 	{
 		var match = this.matches[i];
 
-		if(match == null || match.length == 0)
+		if(match === null || match.length == 0)
 			continue;
 
 		this.AddBit(Copy(this.code, pos, match.index), null);
@@ -577,7 +577,7 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		
 		for(var i = 0; i < a.length; i++)
 		{
-			if(a[i] == null)
+			if(a[i] === null)
 				continue;
 				
 			if(typeof(a[i]) == 'string' && a[i] != '')
@@ -637,7 +637,7 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 	{
 		var aliases = dp.sh.Brushes[brush].Aliases;
 
-		if(aliases == null)
+		if(aliases === null)
 			continue;
 		
 		for(var i = 0; i < aliases.length; i++)
@@ -652,15 +652,15 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 				element.attributes['language'], element.language
 				);
 		var language = '';
-		
-		if(options == null)
+
+		if(options === null)
 			continue;
 		
 		options = options.split(':');
 		
 		language = options[0].toLowerCase();
 
-		if(registered[language] == null)
+		if(registered[language] === null)
 			continue;
 		
 		// instantiate a brush
@@ -669,10 +669,29 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		// hide the original element
 		element.style.display = 'none';
 
-		highlighter.noGutter = (showGutter == null) ? IsOptionSet('nogutter', options) : !showGutter;
-		highlighter.addControls = (showControls == null) ? !IsOptionSet('nocontrols', options) : showControls;
-		highlighter.collapse = (collapseAll == null) ? IsOptionSet('collapse', options) : collapseAll;
-		highlighter.showColumns = (showColumns == null) ? IsOptionSet('showcolumns', options) : showColumns;
+        if (typeof(showGutter) === 'undefined') {
+            highlighter.noGutter = IsOptionSet('nogutter', options);
+        } else {
+            highlighter.noGutter = !showGutter;
+        }
+
+        if (typeof(showControls) === 'undefined') {
+            highlighter.addControls = !IsOptionSet('nocontrols', options);
+        } else {
+            highlighter.addControls = showControls;
+        }
+
+        if (typeof(collapseAll) === 'undefined') {
+            highlighter.collapse = IsOptionSet('collapse', options);
+        } else {
+            highlighter.collapse = collapseAll;
+        }
+
+        if (typeof(showColumns) === 'undefined') {
+            highlighter.showColumns = IsOptionSet('showcolumns', options);
+        } else {
+            highlighter.showColumns = showColumns;
+        }
 
 		// write out custom brush style
 		var headNode = document.getElementsByTagName('head')[0];
@@ -695,7 +714,7 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		}
 		
 		// first line idea comes from Andrew Collington, thanks!
-		highlighter.firstLine = (firstLine == null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
+		highlighter.firstLine = (firstLine === null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
 
 		highlighter.Highlight(element[propertyName]);
 		
