@@ -83,4 +83,5 @@ dp.sh.Brushes.CSS.Aliases	= ['css'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

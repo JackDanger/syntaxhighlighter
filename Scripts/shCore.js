@@ -669,25 +669,29 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		// hide the original element
 		element.style.display = 'none';
 
-		if (typeof(showGutter) === 'undefined') {
+		if (typeof(showGutter) === 'undefined')
+		{
 			highlighter.noGutter = IsOptionSet('nogutter', options);
 		} else {
 			highlighter.noGutter = !showGutter;
 		}
 
-		if (typeof(showControls) === 'undefined') {
+		if (typeof(showControls) === 'undefined')
+		{
 			highlighter.addControls = !IsOptionSet('nocontrols', options);
 		} else {
 			highlighter.addControls = showControls;
 		}
 
-		if (typeof(collapseAll) === 'undefined') {
+		if (typeof(collapseAll) === 'undefined')
+		{
 			highlighter.collapse = IsOptionSet('collapse', options);
 		} else {
 			highlighter.collapse = collapseAll;
 		}
 
-		if (typeof(showColumns) === 'undefined') {
+		if (typeof(showColumns) === 'undefined')
+		{
 			highlighter.showColumns = IsOptionSet('showcolumns', options);
 		} else {
 			highlighter.showColumns = showColumns;
@@ -727,4 +731,5 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

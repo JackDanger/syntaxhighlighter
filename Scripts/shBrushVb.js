@@ -49,4 +49,5 @@ dp.sh.Brushes.Vb.Aliases	= ['vb', 'vb.net'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

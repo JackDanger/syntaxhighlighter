@@ -50,4 +50,5 @@ dp.sh.Brushes.Python.Aliases    = ['py', 'python'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

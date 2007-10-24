@@ -54,4 +54,5 @@ dp.sh.Brushes.Delphi.Aliases	= ['delphi', 'pascal'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

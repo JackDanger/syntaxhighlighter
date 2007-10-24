@@ -48,4 +48,5 @@ dp.sh.Brushes.Java.Aliases	= ['java'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

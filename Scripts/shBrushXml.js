@@ -90,4 +90,5 @@ dp.sh.Brushes.Xml.prototype.ProcessRegexList = function()
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

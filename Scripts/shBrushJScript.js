@@ -42,4 +42,5 @@ dp.sh.Brushes.JScript.Aliases	= ['js', 'jscript', 'javascript'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

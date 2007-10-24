@@ -80,4 +80,5 @@ dp.sh.Brushes.Php.Aliases	= ['php'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

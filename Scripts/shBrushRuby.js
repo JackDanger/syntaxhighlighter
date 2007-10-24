@@ -48,4 +48,5 @@ dp.sh.Brushes.Ruby.Aliases = ['ruby', 'rails', 'ror'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:

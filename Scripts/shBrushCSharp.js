@@ -52,4 +52,5 @@ dp.sh.Brushes.CSharp.Aliases	= ['c#', 'c-sharp', 'csharp'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
+// c-file-style: "stroustrup"
 // End:
