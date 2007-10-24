@@ -59,3 +59,7 @@ dp.sh.Brushes.Sql = function()
 
 dp.sh.Brushes.Sql.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Sql.Aliases	= ['sql'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:

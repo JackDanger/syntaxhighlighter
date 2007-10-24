@@ -47,3 +47,7 @@ dp.sh.Brushes.Python = function()
 
 dp.sh.Brushes.Python.prototype  = new dp.sh.Highlighter();
 dp.sh.Brushes.Python.Aliases    = ['py', 'python'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:

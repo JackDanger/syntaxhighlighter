@@ -39,3 +39,7 @@ dp.sh.Brushes.JScript = function()
 
 dp.sh.Brushes.JScript.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.JScript.Aliases	= ['js', 'jscript', 'javascript'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:

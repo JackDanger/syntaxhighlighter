@@ -77,3 +77,7 @@ dp.sh.Brushes.Php = function()
 
 dp.sh.Brushes.Php.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Php.Aliases	= ['php'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:

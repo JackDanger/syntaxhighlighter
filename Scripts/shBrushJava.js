@@ -45,3 +45,7 @@ dp.sh.Brushes.Java = function()
 
 dp.sh.Brushes.Java.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Java.Aliases	= ['java'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:

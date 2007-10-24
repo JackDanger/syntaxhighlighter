@@ -46,3 +46,7 @@ dp.sh.Brushes.Vb = function()
 
 dp.sh.Brushes.Vb.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Vb.Aliases	= ['vb', 'vb.net'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:

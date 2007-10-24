@@ -20,9 +20,9 @@
 
 dp.sh.Brushes.Cpp = function()
 {
-	var datatypes = 
+	var datatypes =
 	'ATOM BOOL BOOLEAN BYTE CHAR COLORREF DWORD DWORDLONG DWORD_PTR ' +
-	'DWORD32 DWORD64 FLOAT HACCEL HALF_PTR HANDLE HBITMAP HBRUSH ' + 
+	'DWORD32 DWORD64 FLOAT HACCEL HALF_PTR HANDLE HBITMAP HBRUSH ' +
 	'HCOLORSPACE HCONV HCONVLIST HCURSOR HDC HDDEDATA HDESK HDROP HDWP ' +
 	'HENHMETAFILE HFILE HFONT HGDIOBJ HGLOBAL HHOOK HICON HINSTANCE HKEY ' +
 	'HKL HLOCAL HMENU HMETAFILE HMODULE HMONITOR HPALETTE HPEN HRESULT ' +
@@ -34,7 +34,7 @@ dp.sh.Brushes.Cpp = function()
 	'PINT_PTR PINT32 PINT64 PLCID PLONG PLONGLONG PLONG_PTR PLONG32 PLONG64 POINTER_32 ' +
 	'POINTER_64 PSHORT PSIZE_T PSSIZE_T PSTR PTBYTE PTCHAR PTSTR PUCHAR PUHALF_PTR ' +
 	'PUINT PUINT_PTR PUINT32 PUINT64 PULONG PULONGLONG PULONG_PTR PULONG32 PULONG64 ' +
-	'PUSHORT PVOID PWCHAR PWORD PWSTR SC_HANDLE SC_LOCK SERVICE_STATUS_HANDLE SHORT ' + 
+	'PUSHORT PVOID PWCHAR PWORD PWSTR SC_HANDLE SC_LOCK SERVICE_STATUS_HANDLE SHORT ' +
 	'SIZE_T SSIZE_T TBYTE TCHAR UCHAR UHALF_PTR UINT UINT_PTR UINT32 UINT64 ULONG ' +
 	'ULONGLONG ULONG_PTR ULONG32 ULONG64 USHORT USN VOID WCHAR WORD WPARAM WPARAM WPARAM ' +
 	'char bool short int __int32 __int64 __int8 __int16 long float double __wchar_t ' +
@@ -46,15 +46,15 @@ dp.sh.Brushes.Cpp = function()
 	'time_t __time64_t _timeb __timeb64 tm uintptr_t _utimbuf ' +
 	'va_list wchar_t wctrans_t wctype_t wint_t signed';
 
-	var keywords = 
+	var keywords =
 	'break case catch class const __finally __exception __try ' +
-	'const_cast continue private public protected __declspec ' + 
-	'default delete deprecated dllexport dllimport do dynamic_cast ' + 
-	'else enum explicit extern if for friend goto inline ' + 
-	'mutable naked namespace new noinline noreturn nothrow ' + 
-	'register reinterpret_cast return selectany ' + 
-	'sizeof static static_cast struct switch template this ' + 
-	'thread throw true false try typedef typeid typename union ' + 
+	'const_cast continue private public protected __declspec ' +
+	'default delete deprecated dllexport dllimport do dynamic_cast ' +
+	'else enum explicit extern if for friend goto inline ' +
+	'mutable naked namespace new noinline noreturn nothrow ' +
+	'register reinterpret_cast return selectany ' +
+	'sizeof static static_cast struct switch template this ' +
+	'thread throw true false try typedef typeid typename union ' +
 	'using uuid virtual void volatile whcar_t while';
 
 	this.regexList = [
@@ -73,3 +73,7 @@ dp.sh.Brushes.Cpp = function()
 
 dp.sh.Brushes.Cpp.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.Cpp.Aliases	= ['cpp', 'c', 'c++'];
+// Local Variables:
+// mode: javascript
+// indent-tabs-mode: t
+// End:
