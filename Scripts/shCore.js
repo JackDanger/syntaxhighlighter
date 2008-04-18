@@ -1,204 +1,406 @@
 /**
- * Code Syntax Highlighter.
- * Version 1.5.1
- * Copyright (C) 2004-2007 Alex Gorbatchev
- * http://www.dreamprojections.com/syntaxhighlighter/
+ * Syntax Highlighter.
+ * http://code.google.com/syntaxhighlighter/
+ * 
+ * @version
+ * 1.5.1
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, version 3 of the License.
+ * @author
+ * Alex Gorbatchev
+ * 
+ * @copyright
+ * Copyright (C) 2004-2008 Alex Gorbatchev
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * @license
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-//
-// create namespaces
-//
 var dp = {
 	sh :
 	{
-		Toolbar : {},
-		Utils	: {},
-		RegexLib: {},
-		Brushes	: {},
-		Strings : {
-			AboutDialog : '<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://www.dreamprojections.com/syntaxhighlighter/?ref=about" target="_blank">http://www.dreamprojections.com/syntaxhighlighter</a></p>&copy;2004-2007 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'
+		Version : '1.5.1',
+
+		Strings : 
+		{
+			aboutDialog : '<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://code.google.com/syntaxhighlighter" target="_blank">http://code.google.com/syntaxhighlighter</a></p>&copy;2004-2008 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'
 		},
+		
 		ClipboardSwf : null,
-		Version : '1.5.1'
-	}
-};
-
-// make an alias
-dp.SyntaxHighlighter = dp.sh;
-
-//
-// Toolbar functions
-//
-
-dp.sh.Toolbar.Commands = {
-	ExpandSource: {
-		label: '+ expand source',
-		check: function(highlighter) { return highlighter.collapse; },
-		func: function(sender, highlighter)
+	
+		Toolbar : 
 		{
-			sender.parentNode.removeChild(sender);
-			highlighter.div.className = highlighter.div.className.replace('collapsed', '');
-		}
-	},
-
-	// opens a new windows and puts the original unformatted source code inside.
-	ViewSource: {
-		label: 'view plain',
-		func: function(sender, highlighter)
-		{
-			var code = dp.sh.Utils.FixForBlogger(highlighter.originalCode).replace(/</g, '&lt;');
-			var wnd = window.open('', '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=0');
-			wnd.document.write('<textarea style="width:99%;height:99%">' + code + '</textarea>');
-			wnd.document.close();
-		}
-	},
-
-	// Copies the original source code in to the clipboard. Uses either IE only method or Flash object if ClipboardSwf is set
-	CopyToClipboard: {
-		label: 'copy to clipboard',
-		check: function() { return window.clipboardData != null || dp.sh.ClipboardSwf != null; },
-		func: function(sender, highlighter)
-		{
-			var code = dp.sh.Utils.FixForBlogger(highlighter.originalCode)
-				.replace(/&lt;/g,'<')
-				.replace(/&gt;/g,'>')
-				.replace(/&amp;/g,'&')
-			;
-
-			if(window.clipboardData)
+			/**
+			 * Creates new toolbar for a highlighter.
+			 * 
+			 * @private
+			 * 
+			 * @param {Highlighter} highlighter    Target highlighter.
+			 */
+			create : function(highlighter)
 			{
-				window.clipboardData.setData('text', code);
-			}
-			else if(dp.sh.ClipboardSwf != null)
-			{
-				var flashcopier = highlighter.flashCopier;
-
-				if(flashcopier === null)
+				var div = document.createElement('DIV');
+			
+				div.className = 'tools';
+			
+				for(var name in dp.sh.Toolbar.Commands)
 				{
-					flashcopier = document.createElement('div');
-					highlighter.flashCopier = flashcopier;
-					highlighter.div.appendChild(flashcopier);
+					var cmd = dp.sh.Toolbar.Commands[name];
+			
+					if(cmd.check != null && !cmd.check(highlighter))
+						continue;
+			
+					div.innerHTML += '<a href="#" onclick="dp.sh.Toolbar.command(\'' + name + '\',this);return false;">' + cmd.label + '</a>';
 				}
+			
+				return div;
+			},
+			
+			/**
+			 * Executes a command.
+			 * 
+			 * @private
+			 * 
+			 * @param {String} name     Name of the command to execute.
+			 * @param {Element} sender  Sender element.
+			 */
+			command : function(name, sender)
+			{
+				var n = sender;
 
-				flashcopier.innerHTML = '<embed src="' + dp.sh.ClipboardSwf + '" FlashVars="clipboard='+encodeURIComponent(code)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';
+				// find the highlighter			
+				while(n != null && n.className.indexOf('dp-highlighter') == -1)
+					n = n.parentNode;
+			
+				if(n != null)
+					dp.sh.Toolbar.Commands[name].func(sender, n.highlighter);
+			},
+
+			/**
+			 * Commands collection.
+			 */
+			Commands :
+			{
+				/**
+				 * Command to expand the source view.
+				 */
+				expandSource : 
+				{
+					label : '+ expand source',
+					check : function(highlighter) 
+					{
+						return highlighter.collapse; 
+					},
+					func : function(sender, highlighter)
+					{
+						sender.parentNode.removeChild(sender);
+						highlighter.div.className = highlighter.div.className.replace('collapsed', '');
+					}
+				},
+			
+				/**
+				 * Command to open a new window and display the original unformatted source code inside.
+				 */
+				viewSource : 
+				{
+					label : 'view source',
+					func : function(sender, highlighter)
+					{
+						var code = dp.sh.Utils.fixForBlogger(highlighter.originalCode).replace(/</g, '&lt;');
+						var wnd = window.open('', '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=0');
+						wnd.document.write('<textarea style="width:99%;height:99%">' + code + '</textarea>');
+						wnd.document.close();
+					}
+				},
+
+				/**
+				 * Comman to copy the original source code in to the clipboard. 
+				 * Uses either IE only method or Flash object if ClipboardSwf is configured.
+				 */
+				copyToClipboard : 
+				{
+					label : 'copy to clipboard',
+					check : function() 
+					{ 
+						return window.clipboardData != null || dp.sh.ClipboardSwf != null; 
+					},
+					func : function(sender, highlighter)
+					{
+						var code = dp.sh.Utils.fixForBlogger(highlighter.originalCode)
+							.replace(/&lt;/g,'<')
+							.replace(/&gt;/g,'>')
+							.replace(/&amp;/g,'&')
+						;
+			
+						if(window.clipboardData)
+						{
+							window.clipboardData.setData('text', code);
+						}
+						else if(dp.sh.ClipboardSwf != null)
+						{
+							var flashcopier = highlighter.flashCopier;
+			
+							if(flashcopier === null)
+							{
+								flashcopier = document.createElement('div');
+								highlighter.flashCopier = flashcopier;
+								highlighter.div.appendChild(flashcopier);
+							}
+			
+							flashcopier.innerHTML = '<embed src="' + dp.sh.ClipboardSwf + '" FlashVars="clipboard='+encodeURIComponent(code)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';
+						}
+			
+						alert('The code is in your clipboard now');
+					}
+				},
+			
+				/**
+				 * Command to print the colored source code.
+				 */
+				printSource : 
+				{
+					label : 'print',
+					func : function(sender, highlighter)
+					{
+						var iframe = document.createElement('IFRAME');
+						var doc = null;
+			
+						// this hides the iframe
+						iframe.style.cssText = 'position:absolute;width:0px;height:0px;left:-500px;top:-500px;';
+			
+						document.body.appendChild(iframe);
+						doc = iframe.contentWindow.document;
+			
+						dp.sh.Utils.copyStyles(doc, window.document);
+						doc.write('<div class="' + highlighter.div.className.replace('collapsed', '') + ' printing">' + highlighter.div.innerHTML + '</div>');
+						doc.close();
+			
+						iframe.contentWindow.focus();
+						iframe.contentWindow.print();
+			
+						alert('Printing...');
+			
+						document.body.removeChild(iframe);
+					}
+				},
+
+				/**
+				 * Command to display the about dialog window.
+				 */			
+				about : 
+				{
+					label : '?',
+					func : function(highlighter)
+					{
+						var wnd	= window.open('', '_blank', 'dialog,width=300,height=150,scrollbars=0');
+						var doc	= wnd.document;
+			
+						dp.sh.Utils.copyStyles(doc, window.document);
+			
+						doc.write(dp.sh.Strings.aboutDialog.replace('{V}', dp.sh.Version));
+						doc.close();
+						wnd.focus();
+					}
+				}
+			} // end of dp.sh.Toolbar.Commands
+		}, // end of dp.sh.Toolbar
+		
+		Utils : 
+		{
+			/**
+			 * Replaces tabs with smart spaces. Each tab is assumed to be 4 spaces.
+			 * 
+			 * @private
+			 * 
+			 * @param {String} code    Code to fix the tabs in.
+			 * @return {String}        Returns code with all tabs replaces with roper amount of spaces.
+			 */
+			processSmartTabs : function(code)
+			{
+				var lines = code.split('\n');
+				var result = '';
+				var tabSize = 4;
+				var tab = '\t';
+				
+				// This function inserts specified amount of spaces in the string
+				// where a tab is while removing that given tab.
+				function insertSpaces(line, pos, count)
+				{
+					var left = line.substr(0, pos);
+					var right = line.substr(pos + 1, line.length); // pos + 1 will get rid of the tab
+					var spaces = '';
+					
+					for (var i = 0; i < count; i++) 
+						spaces += ' ';
+					
+					return left + spaces + right;
+				}
+				
+				// This function process one line for 'smart tabs'
+				function processLine(line, tabSize)
+				{
+					if (line.indexOf(tab) == -1) 
+						return line;
+					
+					var pos = 0;
+					
+					while ((pos = line.indexOf(tab)) != -1) 
+					{
+						// This is pretty much all there is to the 'smart tabs' logic.
+						// Based on the position within the line and size of a tab,
+						// calculate the amount of spaces we need to insert.
+						var spaces = tabSize - pos % tabSize;
+						
+						line = insertSpaces(line, pos, spaces);
+					}
+					
+					return line;
+				}
+				
+				// Go through all the lines and do the 'smart tabs' magic.
+				for (var i = 0; i < lines.length; i++) 
+					result += processLine(lines[i], tabSize) + '\n';
+				
+				return result;
+			},
+	
+			// copies all <link rel="stylesheet" /> from 'target' window to 'dest'
+			copyStyles : function(destDoc, sourceDoc)
+			{
+				var links = sourceDoc.getElementsByTagName('link');
+			
+				for(var i = 0; i < links.length; i++)
+					if(links[i].rel.toLowerCase() == 'stylesheet')
+						destDoc.write('<link type="text/css" rel="stylesheet" href="' + links[i].href + '"></link>');
+			},
+			
+			fixForBlogger : function(str)
+			{
+				return (dp.sh.isBloggerMode == true) ? str.replace(/<br\s*\/?>|&lt;br\s*\/?&gt;/gi, '\n') : str;
+			},
+			
+			trim: function(str)
+			{
+				return str.replace(/^\s*(.*?)[\s\n]*$/g, '$1');
+			},
+			
+			chop: function(str)
+			{
+				return str.replace(/\n*$/, '').replace(/^\n*/, '');
+			},
+			
+			unindent: function(str)
+			{
+				var lines = dp.sh.Utils.fixForBlogger(str).split('\n');
+				var indents = new Array();
+				var regex = new RegExp('^\\s*', 'g');
+				var min = 1000;
+				
+				// go through every line and check for common number of indents
+				for (var i = 0; i < lines.length && min > 0; i++) 
+				{
+					if (dp.sh.Utils.trim(lines[i]).length === 0) 
+						continue;
+					
+					var matches = regex.exec(lines[i]);
+					
+					if (matches != null && matches.length > 0) 
+						min = Math.min(matches[0].length, min);
+				}
+				
+				// trim minimum common number of white space from the begining of every line
+				if (min > 0) 
+					for (var i = 0; i < lines.length; i++) 
+						lines[i] = lines[i].substr(min);
+				
+				return lines.join('\n');
 			}
-
-			alert('The code is in your clipboard now');
-		}
-	},
-
-	// creates an invisible iframe, puts the original source code inside and prints it
-	PrintSource: {
-		label: 'print',
-		func: function(sender, highlighter)
+		}, // end of dp.sh.Utils
+		
+		// Common reusable regular expressions
+		RegexLib : 
 		{
-			var iframe = document.createElement('IFRAME');
-			var doc = null;
+			MultiLineCComments : new RegExp('/\\*[\\s\\S]*?\\*/', 'gm'),
+			SingleLineCComments : new RegExp('//.*$', 'gm'),
+			SingleLinePerlComments : new RegExp('#.*$', 'gm'),
+			DoubleQuotedString : new RegExp('"(?:\\.|(\\\\\\")|[^\\""\\n])*"','g'),
+			SingleQuotedString : new RegExp("'(?:\\.|(\\\\\\')|[^\\''\\n])*'", 'g')
+		}, // end of dp.sh.RegexLib
 
-			// this hides the iframe
-			iframe.style.cssText = 'position:absolute;width:0px;height:0px;left:-500px;top:-500px;';
-
-			document.body.appendChild(iframe);
-			doc = iframe.contentWindow.document;
-
-			dp.sh.Utils.CopyStyles(doc, window.document);
-			doc.write('<div class="' + highlighter.div.className.replace('collapsed', '') + ' printing">' + highlighter.div.innerHTML + '</div>');
-			doc.close();
-
-			iframe.contentWindow.focus();
-			iframe.contentWindow.print();
-
-			alert('Printing...');
-
-			document.body.removeChild(iframe);
-		}
-	},
-
-	About: {
-		label: '?',
-		func: function(highlighter)
+		/**
+		 * This object is populated by user included external brush files.
+		 */		
+		Brushes	: {},
+		
+		BloggerMode : function()
 		{
-			var wnd	= window.open('', '_blank', 'dialog,width=300,height=150,scrollbars=0');
-			var doc	= wnd.document;
-
-			dp.sh.Utils.CopyStyles(doc, window.document);
-
-			doc.write(dp.sh.Strings.AboutDialog.replace('{V}', dp.sh.Version));
-			doc.close();
-			wnd.focus();
+			dp.sh.isBloggerMode = true;
+		},
+		
+		/**
+		 * Callback method for Array.sort() which sorts matches by
+		 * index position and then by length.
+		 * 
+		 * @private
+		 * 
+		 * @param {Match} m1	Left object.
+		 * @param {Match} m2    Right object.
+		 * @return {Number}     Returns -1, 0 or -1 as a comparison result.
+		 */
+		matchesSortCallback : function(m1, m2)
+		{
+			// sort matches by index first
+			if(m1.index < m2.index)
+				return -1;
+			else if(m1.index > m2.index)
+				return 1;
+			else
+			{
+				// if index is the same, sort by length
+				if(m1.length < m2.length)
+					return -1;
+				else if(m1.length > m2.length)
+					return 1;
+			}
+			
+			return 0;
+		},
+	
+		/**
+		 * Executes given regular expression on provided code and returns all
+		 * matches that are found.
+		 * 
+		 * @private
+		 * 
+		 * @param {String} code    Code to execute regular expression on.
+		 * @param {RegExp} regex   Regular expression to execute.
+		 * @param {Object} css     Class name associated with the current regular expression.
+		 * @return {Array}         Returns a list of Match objects.
+		 */ 
+		getMatches : function(code, regex, css)
+		{
+			var index = 0;
+			var match = null;
+			var result = [];
+			
+			while((match = regex.exec(code)) != null)
+				result.push(new dp.sh.Match(match[0], match.index, css));
+				
+			return result;
 		}
-	}
+	} // end of dp.sh.Utils
 };
 
-// creates a <div /> with all toolbar links
-dp.sh.Toolbar.Create = function(highlighter)
-{
-	var div = document.createElement('DIV');
-
-	div.className = 'tools';
-
-	for(var name in dp.sh.Toolbar.Commands)
-	{
-		var cmd = dp.sh.Toolbar.Commands[name];
-
-		if(cmd.check != null && !cmd.check(highlighter))
-			continue;
-
-		div.innerHTML += '<a href="#" onclick="dp.sh.Toolbar.Command(\'' + name + '\',this);return false;">' + cmd.label + '</a>';
-	}
-
-	return div;
-}
-
-// executes toolbar command by name
-dp.sh.Toolbar.Command = function(name, sender)
-{
-	var n = sender;
-
-	while(n != null && n.className.indexOf('dp-highlighter') == -1)
-		n = n.parentNode;
-
-	if(n != null)
-		dp.sh.Toolbar.Commands[name].func(sender, n.highlighter);
-}
-
-// copies all <link rel="stylesheet" /> from 'target' window to 'dest'
-dp.sh.Utils.CopyStyles = function(destDoc, sourceDoc)
-{
-	var links = sourceDoc.getElementsByTagName('link');
-
-	for(var i = 0; i < links.length; i++)
-		if(links[i].rel.toLowerCase() == 'stylesheet')
-			destDoc.write('<link type="text/css" rel="stylesheet" href="' + links[i].href + '"></link>');
-}
-
-dp.sh.Utils.FixForBlogger = function(str)
-{
-	return (dp.sh.isBloggerMode == true) ? str.replace(/<br\s*\/?>|&lt;br\s*\/?&gt;/gi, '\n') : str;
-}
-
-//
-// Common reusable regular expressions
-//
-dp.sh.RegexLib = {
-	MultiLineCComments : new RegExp('/\\*[\\s\\S]*?\\*/', 'gm'),
-	SingleLineCComments : new RegExp('//.*$', 'gm'),
-	SingleLinePerlComments : new RegExp('#.*$', 'gm'),
-	DoubleQuotedString : new RegExp('"(?:\\.|(\\\\\\")|[^\\""\\n])*"','g'),
-	SingleQuotedString : new RegExp("'(?:\\.|(\\\\\\')|[^\\''\\n])*'", 'g')
-};
+// make an alias to the actual namespace
+dp.SyntaxHighlighter = dp.sh;
 
 //
 // Match object
@@ -209,7 +411,14 @@ dp.sh.Match = function(value, index, css)
 	this.index = index;
 	this.length = value.length;
 	this.css = css;
-}
+};
+
+dp.sh.Match.prototype = {
+	toString: function()
+	{
+		return this.value;
+	}
+};
 
 //
 // Highlighter object
@@ -224,349 +433,295 @@ dp.sh.Highlighter = function()
 	this.showColumns = true;
 }
 
-// static callback for the match sorting
-dp.sh.Highlighter.SortCallback = function(m1, m2)
-{
-	// sort matches by index first
-	if(m1.index < m2.index)
-		return -1;
-	else if(m1.index > m2.index)
-		return 1;
-	else
+dp.sh.Highlighter.prototype = {
+	/**
+	 * Creates a new instance of a given element and sets its
+	 * `highlighter` property to the current class.
+	 *
+	 * @private
+	 * 
+	 * @param {String} name   Name of the element to create (DIV, A, etc).
+	 * @return {Element}      Returns new object.
+	 */
+	createElement: function(name){
+		var result = document.createElement(name);
+		result.highlighter = this;
+		return result;
+	},
+	
+	/**
+	 * Creates a new text element, applies given style and adds it
+	 * to the this.div element.
+	 * 
+	 * @private
+	 * 
+	 * @param {String} str    Text.
+	 * @param {String} css    Style name.
+	 */
+	addBit: function(str, css)
 	{
-		// if index is the same, sort by length
-		if(m1.length < m2.length)
-			return -1;
-		else if(m1.length > m2.length)
-			return 1;
-	}
-	return 0;
-}
-
-dp.sh.Highlighter.prototype.CreateElement = function(name)
-{
-	var result = document.createElement(name);
-	result.highlighter = this;
-	return result;
-}
-
-// gets a list of all matches for a given regular expression
-dp.sh.Highlighter.prototype.GetMatches = function(regex, css)
-{
-	var index = 0;
-	var match = null;
-
-	while((match = regex.exec(this.code)) != null)
-		this.matches[this.matches.length] = new dp.sh.Match(match[0], match.index, css);
-}
-
-dp.sh.Highlighter.prototype.AddBit = function(str, css)
-{
-	if(str === null || str.length === 0)
-		return;
-
-	var span = this.CreateElement('SPAN');
-
-//	str = str.replace(/&/g, '&amp;');
-	str = str.replace(/ /g, '&nbsp;');
-	str = str.replace(/</g, '&lt;');
-//	str = str.replace(/&lt;/g, '<');
-//	str = str.replace(/>/g, '&gt;');
-	str = str.replace(/\n/gm, '&nbsp;<br>');
-
-	// when adding a piece of code, check to see if it has line breaks in it
-	// and if it does, wrap individual line breaks with span tags
-	if(css != null)
-	{
-		if((/br/gi).test(str))
+		if (str === null || str.length === 0) 
+			return;
+		
+		var span = this.createElement('SPAN');
+		
+		//	str = str.replace(/&/g, '&amp;');
+		str = str.replace(/ /g, '&nbsp;');
+		str = str.replace(/</g, '&lt;');
+		//	str = str.replace(/&lt;/g, '<');
+		//	str = str.replace(/>/g, '&gt;');
+		str = str.replace(/\n/gm, '&nbsp;<br>');
+		
+		// when adding a piece of code, check to see if it has line breaks in it
+		// and if it does, wrap individual line breaks with span tags
+		if (css != null)
 		{
-			var lines = str.split('&nbsp;<br>');
-
-			for(var i = 0; i < lines.length; i++)
+			if ((/br/gi).test(str)) 
 			{
-				span = this.CreateElement('SPAN');
+				var lines = str.split('&nbsp;<br>');
+				
+				for (var i = 0; i < lines.length; i++) 
+				{
+					span = this.createElement('SPAN');
+					span.className = css;
+					span.innerHTML = lines[i];
+					
+					this.div.appendChild(span);
+					
+					// don't add a <BR> for the last line
+					if (i + 1 < lines.length) 
+						this.div.appendChild(this.createElement('BR'));
+				}
+			}
+			else 
+			{
 				span.className = css;
-				span.innerHTML = lines[i];
-
+				span.innerHTML = str;
 				this.div.appendChild(span);
-
-				// don't add a <BR> for the last line
-				if(i + 1 < lines.length)
-					this.div.appendChild(this.CreateElement('BR'));
 			}
 		}
-		else
+		else 
 		{
-			span.className = css;
 			span.innerHTML = str;
 			this.div.appendChild(span);
 		}
-	}
-	else
+	},
+	
+	/**
+	 * Checks if one match is inside another.
+	 * 
+	 * @private 
+	 * 
+	 * @param {Match} match   Match object to check.
+	 * @return {Boolean}      Returns true if given match was inside another, false otherwise.
+	 */
+	isMatchNested: function(match)
 	{
-		span.innerHTML = str;
-		this.div.appendChild(span);
-	}
-}
-
-// checks if one match is inside any other match
-dp.sh.Highlighter.prototype.IsInside = function(match)
-{
-	if(match === null || match.length === 0)
-		return false;
-
-	for(var i = 0; i < this.matches.length; i++)
-	{
-		var c = this.matches[i];
-
-		if(c === null)
-			continue;
-
-		if((match.index > c.index) && (match.index < c.index + c.length))
-			return true;
-	}
-
-	return false;
-}
-
-dp.sh.Highlighter.prototype.ProcessRegexList = function()
-{
-	for(var i = 0; i < this.regexList.length; i++)
-		this.GetMatches(this.regexList[i].regex, this.regexList[i].css);
-}
-
-dp.sh.Highlighter.prototype.ProcessSmartTabs = function(code)
-{
-	var lines	= code.split('\n');
-	var result	= '';
-	var tabSize	= 4;
-	var tab		= '\t';
-
-	// This function inserts specified amount of spaces in the string
-	// where a tab is while removing that given tab.
-	function InsertSpaces(line, pos, count)
-	{
-		var left	= line.substr(0, pos);
-		var right	= line.substr(pos + 1, line.length);	// pos + 1 will get rid of the tab
-		var spaces	= '';
-
-		for(var i = 0; i < count; i++)
-			spaces += ' ';
-
-		return left + spaces + right;
-	}
-
-	// This function process one line for 'smart tabs'
-	function ProcessLine(line, tabSize)
-	{
-		if(line.indexOf(tab) == -1)
-			return line;
-
-		var pos = 0;
-
-		while((pos = line.indexOf(tab)) != -1)
+		for (var i = 0; i < this.matches.length; i++)
 		{
-			// This is pretty much all there is to the 'smart tabs' logic.
-			// Based on the position within the line and size of a tab,
-			// calculate the amount of spaces we need to insert.
-			var spaces = tabSize - pos % tabSize;
-
-			line = InsertSpaces(line, pos, spaces);
+			var item = this.matches[i];
+			
+			if (item === null)
+				continue;
+			
+			if ((match.index > item.index) && (match.index < item.index + item.length))
+				return true;
 		}
-
-		return line;
-	}
-
-	// Go through all the lines and do the 'smart tabs' magic.
-	for(var i = 0; i < lines.length; i++)
-		result += ProcessLine(lines[i], tabSize) + '\n';
-
-	return result;
-}
-
-dp.sh.Highlighter.prototype.SwitchToList = function()
-{
-	// thanks to Lachlan Donald from SitePoint.com for this <br/> tag fix.
-	var html = this.div.innerHTML.replace(/<(br)\/?>/gi, '\n');
-	var lines = html.split('\n');
-
-	if(this.addControls == true)
-		this.bar.appendChild(dp.sh.Toolbar.Create(this));
-
-	// add columns ruler
-	if(this.showColumns)
+		
+		return false;
+	},
+	
+	/**
+	 * Applies all regular expression to the code and returns all matches.
+	 * 
+	 * @private
+	 * 
+	 * @return {Array} List of all matches.
+	 */
+	getMatches: function()
 	{
-		var div = this.CreateElement('div');
-		var columns = this.CreateElement('div');
+		var result = [];
+		
+		if (this.regexList != null)
+			for (var i = 0; i < this.regexList.length; i++) 
+			{
+				var item = this.regexList[i];
+				result = result.concat(dp.sh.getMatches(this.code, item.regex, item.css));
+			}
+		
+		// sort the matches
+		result = result.sort(dp.sh.matchesSortCallback);
+
+		return result;
+	},
+	
+	setupRuler: function()
+	{
+		var div = this.createElement('div');
+		var columns = this.createElement('div');
 		var showEvery = 10;
 		var i = 1;
-
-		while(i <= 150)
+		
+		while (i <= 150) 
 		{
-			if(i % showEvery === 0)
+			if (i % showEvery === 0) 
 			{
 				div.innerHTML += i;
 				i += (i + '').length;
 			}
-			else
+			else 
 			{
 				div.innerHTML += '&middot;';
 				i++;
 			}
 		}
-
+		
 		columns.className = 'columns';
 		columns.appendChild(div);
 		this.bar.appendChild(columns);
-	}
-
-	for(var i = 0, lineIndex = this.firstLine; i < lines.length - 1; i++, lineIndex++)
+	},
+	
+	switchToList: function()
 	{
-		var li = this.CreateElement('LI');
-		var span = this.CreateElement('SPAN');
-
-		// uses .line1 and .line2 css styles for alternating lines
-		li.className = (i % 2 === 0) ? 'alt' : '';
-		span.innerHTML = lines[i] + '&nbsp;';
-
-		li.appendChild(span);
-		this.ol.appendChild(li);
-	}
-
-	this.div.innerHTML	= '';
-}
-
-dp.sh.Highlighter.prototype.Highlight = function(code)
-{
-	function Trim(str)
-	{
-		return str.replace(/^\s*(.*?)[\s\n]*$/g, '$1');
-	}
-
-	function Chop(str)
-	{
-		return str.replace(/\n*$/, '').replace(/^\n*/, '');
-	}
-
-	function Unindent(str)
-	{
-		var lines = dp.sh.Utils.FixForBlogger(str).split('\n');
-		var indents = new Array();
-		var regex = new RegExp('^\\s*', 'g');
-		var min = 1000;
-
-		// go through every line and check for common number of indents
-		for(var i = 0; i < lines.length && min > 0; i++)
+		// thanks to Lachlan Donald from SitePoint.com for this <br/> tag fix.
+		var html = this.div.innerHTML.replace(/<(br)\/?>/gi, '\n');
+		var lines = html.split('\n');
+		
+		if (this.addControls == true) 
+			this.bar.appendChild(dp.sh.Toolbar.create(this));
+		
+		// add columns ruler
+		if (this.showColumns) 
+			this.setupRuler();
+		
+		for (var i = 0, lineIndex = this.firstLine; i < lines.length - 1; i++, lineIndex++) 
 		{
-			if(Trim(lines[i]).length === 0)
-				continue;
+			var li = this.createElement('LI');
+			var span = this.createElement('SPAN');
+			
+			// uses .line1 and .line2 css styles for alternating lines
+			li.className = (i % 2 === 0) ? 'alt' : '';
+			span.innerHTML = lines[i] + '&nbsp;';
+			
+			li.appendChild(span);
+			this.ol.appendChild(li);
+		}
+		
+		this.div.innerHTML = '';
+	},
 
-			var matches = regex.exec(lines[i]);
-
-			if(matches != null && matches.length > 0)
-				min = Math.min(matches[0].length, min);
+	removeNestedMatches: function()
+	{
+		// The following loop checks to see if any of the matches are inside
+		// of other matches. This process would get rid of highligted strings
+		// inside comments, keywords inside strings and so on.
+		for (var i = 0; i < this.matches.length; i++)
+			if (this.isMatchNested(this.matches[i]))
+				this.matches[i] = null;
+	},
+	
+	processMatches: function()
+	{
+		// This function returns a portions of the string from pos1 to pos2 inclusive
+		function copy(string, pos1, pos2)
+		{
+			return string.substr(pos1, pos2 - pos1);
 		}
 
-		// trim minimum common number of white space from the begining of every line
-		if(min > 0)
-			for(var i = 0; i < lines.length; i++)
-				lines[i] = lines[i].substr(min);
-
-		return lines.join('\n');
-	}
-
-	// This function returns a portions of the string from pos1 to pos2 inclusive
-	function Copy(string, pos1, pos2)
-	{
-		return string.substr(pos1, pos2 - pos1);
-	}
-
-	var pos	= 0;
-
-	if(code === null)
-		code = '';
-
-	this.originalCode = code;
-	this.code = Chop(Unindent(code));
-	this.div = this.CreateElement('DIV');
-	this.bar = this.CreateElement('DIV');
-	this.ol = this.CreateElement('OL');
-	this.matches = new Array();
-
-	this.div.className = 'dp-highlighter';
-	this.div.highlighter = this;
-
-	this.bar.className = 'bar';
-
-	// set the first line
-	this.ol.start = this.firstLine;
-
-	if(this.CssClass != null)
-		this.ol.className = this.CssClass;
-
-	if(this.collapse)
-		this.div.className += ' collapsed';
-
-	if(this.noGutter)
-		this.div.className += ' nogutter';
-
-	// replace tabs with spaces
-	if(this.tabsToSpaces == true)
-		this.code = this.ProcessSmartTabs(this.code);
-
-	this.ProcessRegexList();
-
-	// if no matches found, add entire code as plain text
-	if(this.matches.length === 0)
-	{
-		this.AddBit(this.code, null);
-		this.SwitchToList();
+		var pos = 0;
+		
+		// Finally, go through the final list of matches and pull the all
+		// together adding everything in between that isn't a match.
+		for (var i = 0; i < this.matches.length; i++) 
+		{
+			var match = this.matches[i];
+			
+			if (match === null || match.length === 0) 
+				continue;
+			
+			this.addBit(copy(this.code, pos, match.index), null);
+			this.addBit(match.value, match.css);
+			
+			pos = match.index + match.length;
+		}
+		
+		this.addBit(this.code.substr(pos), null);
+		
+		this.switchToList();
 		this.div.appendChild(this.bar);
 		this.div.appendChild(this.ol);
-		return;
-	}
-
-	// sort the matches
-	this.matches = this.matches.sort(dp.sh.Highlighter.SortCallback);
-
-	// The following loop checks to see if any of the matches are inside
-	// of other matches. This process would get rid of highligted strings
-	// inside comments, keywords inside strings and so on.
-	for(var i = 0; i < this.matches.length; i++)
-		if(this.IsInside(this.matches[i]))
-			this.matches[i] = null;
-
-	// Finally, go through the final list of matches and pull the all
-	// together adding everything in between that isn't a match.
-	for(var i = 0; i < this.matches.length; i++)
+	},
+	
+	highlight: function(code)
 	{
-		var match = this.matches[i];
+				
+		if (code === null) 
+			code = '';
+		
+		this.originalCode = code;
+		this.code = dp.sh.Utils.chop(dp.sh.Utils.unindent(code));
+		this.div = this.createElement('DIV');
+		this.bar = this.createElement('DIV');
+		this.ol = this.createElement('OL');
+		
+		this.div.className = 'dp-highlighter';
+		this.div.highlighter = this;
+		
+		this.bar.className = 'bar';
+		
+		// set the first line
+		this.ol.start = this.firstLine;
+		
+		if (this.CssClass != null) 
+			this.ol.className = this.CssClass;
+		
+		if (this.collapse) 
+			this.div.className += ' collapsed';
+		
+		if (this.noGutter) 
+			this.div.className += ' nogutter';
+		
+		// replace tabs with spaces
+		if (this.tabsToSpaces == true) 
+			this.code = dp.sh.Utils.processSmartTabs(this.code);
+		
+		this.matches = this.getMatches();
+		
+		// if no matches found, add entire code as plain text
+		if (this.matches.length === 0) 
+		{
+			this.addBit(this.code, null);
+			this.switchToList();
+			this.div.appendChild(this.bar);
+			this.div.appendChild(this.ol);
+			return;
+		}
+		
+		this.removeNestedMatches();
+		this.processMatches();
+	},
 
-		if(match === null || match.length === 0)
-			continue;
-
-		this.AddBit(Copy(this.code, pos, match.index), null);
-		this.AddBit(match.value, match.css);
-
-		pos = match.index + match.length;
+	/**
+	 * Converts space separated list of keywords into a regular expression string.
+	 * 
+	 * @param {String} str    Space separated keywords.
+	 * @return {String}       Returns regular expression string.
+	 */	
+	getKeywords: function(str)
+	{
+		return '\\b' + str.replace(/ /g, '\\b|\\b') + '\\b';
+	},
+	
+	/**
+	 * Alias for getKeywords. Kept for compatability with older brushes.
+	 * @alias getKeywords
+	 */
+	GetKeywords: function(str)
+	{
+		this.getKeywords(str);
 	}
 
-	this.AddBit(this.code.substr(pos), null);
-
-	this.SwitchToList();
-	this.div.appendChild(this.bar);
-	this.div.appendChild(this.ol);
-}
-
-dp.sh.Highlighter.prototype.GetKeywords = function(str)
-{
-	return '\\b' + str.replace(/ /g, '\\b|\\b') + '\\b';
-}
-
-dp.sh.BloggerMode = function()
-{
-	dp.sh.isBloggerMode = true;
-}
+}; // end of dp.sh.Highlighter class
 
 // highlightes all elements identified by name and gets source code from specified property
 dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* optional */, collapseAll /* optional */, firstLine /* optional */, showColumns /* optional */)
@@ -720,7 +875,7 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		// first line idea comes from Andrew Collington, thanks!
 		highlighter.firstLine = (firstLine === null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
 
-		highlighter.Highlight(element[propertyName]);
+		highlighter.highlight(element[propertyName]);
 
 		highlighter.source = element;
 
