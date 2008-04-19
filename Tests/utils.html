@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+        <script language="javascript" src="JSUnit/app/jsUnitCore.js"></script>
+        <script language="javascript" src="../Scripts/shCore.js"></script>
+		<link type="text/css" rel="stylesheet" href="../Styles/SyntaxHighlighter.css"></link>
+	</head>
+	<body>
+		<script>
+			function test_measureSpace_should_return_a_number()
+			{
+				assertNotNaN(dp.sh.Utils.measureSpace());
+			}
+			
+			function test_padNumber()
+			{
+				assertEquals('0', dp.sh.Utils.padNumber(0, 0));
+				assertEquals('1', dp.sh.Utils.padNumber(1, 1));
+				
+				assertEquals('02', dp.sh.Utils.padNumber(2, 2));
+				assertEquals('003', dp.sh.Utils.padNumber(3, 3));
+				assertEquals('000101', dp.sh.Utils.padNumber(101, 6));
+			}
+			
+			function test_decorateBit_should_replace_spaces()
+			{
+				assertEquals(' hello ', dp.sh.Utils.decorateBit(' hello '));
+				assertEquals('&nbsp;&nbsp; hello&nbsp;&nbsp; ', dp.sh.Utils.decorateBit('   hello   '));
+			}
+			
+			function test_trim()
+			{
+				assertEquals('hello', dp.sh.Utils.trim(' \n\n hello \n\n '))
+			}
+			
+			function test_processUrls()
+			{
+				assertEquals('  <a href="http://...">http://...</a>  ', dp.sh.Utils.processUrls('  http://...  '));
+			}
+		</script>
+	</body>
+</html>

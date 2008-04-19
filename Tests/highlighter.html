@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+        <script language="javascript" src="JSUnit/app/jsUnitCore.js"></script>
+        <script language="javascript" src="../Scripts/shCore.js"></script>
+		<link type="text/css" rel="stylesheet" href="../Styles/SyntaxHighlighter.css"></link>
+	</head>
+	<body>
+		<script>
+			function test_utils_splitIntoDivs()
+			{
+				var code = 
+					'&nbsp;&nbsp; line 1\n'
+					+ 'line 2'
+				;
+				var expected =
+					'<div class="font line alt1">'
+						+ '<div class="number">1.</div>'
+						+ '<div class="content">'
+							+ '<div style="padding-left:30px;">line 1</div>'
+						+ '</div>'
+					+ '</div>'
+					+ '<div class="font line alt2">'
+						+ '<div class="number">2.</div>'
+						+ '<div class="content">'
+							+ '<div style="padding-left:0px;">line 2</div>'
+						+ '</div>'
+					+ '</div>'
+				;
+				
+				var highlighter = new dp.sh.Highlighter();
+				highlighter.spaceWidth = 10;
+				
+				assertEquals(expected, highlighter.splitIntoDivs(code));
+			}
+		</script>
+	</body>
+</html>

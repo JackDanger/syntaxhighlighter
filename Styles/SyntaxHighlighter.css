@@ -1,7 +1,28 @@
-﻿.dp-highlighter
+﻿.dp-highlighter,
+.dp-highlighter div,
+.dp-highlighter span,
+.dp-highlighter a,
+.dp-highlighter a:hover,
+.dp-highlighter .reset,
+.dp-highlighter.reset
 {
-	font-family: "Consolas", "Monaco", "Courier New", Courier, monospace;
-	font-size: 12px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	color: inherit;
+	background: none;
+	text-align: left;
+	float: none;
+	vertical-align: baseline;
+}
+
+.dp-highlighter
+{
 	background-color: #E7E5DC;
 	width: 99%;
 	overflow: auto;
@@ -9,14 +30,49 @@
 	padding-top: 1px; /* adds a little border on top when controls are hidden */
 }
 
-/* clear styles */
-.dp-highlighter ol,
-.dp-highlighter ol li,
-.dp-highlighter ol li span 
+.dp-highlighter .font,
+.dp-highlighter.font
 {
-	margin: 0;
-	padding: 0;
-	border: none;
+	font-family: "Consolas", "Monaco", "Courier New", Courier, monospace;
+}
+
+.dp-highlighter div.line div.number
+{
+	color: #5C5C5C;
+	float: left; 
+	width: 45px; 
+	text-align: right;
+}
+
+/* Disable numbers when no gutter option is set */
+.dp-highlighter.nogutter div.line div.number
+{
+	display: none;
+}
+
+/* Add border and margin on the lines */
+.dp-highlighter div.line div.content
+{
+	margin-left: 50px; 
+	padding-left: 4px; 
+	border-left: 3px solid #6CE26C;
+}
+
+/* Disable border and margin on the lines when no gutter option is set */
+.dp-highlighter.nogutter div.line div.content
+{
+	margin-left: 0; 
+	border-left: none;
+}
+
+.dp-highlighter div.line.alt1 div.content
+{
+	background-color: #F8F8F8;
+}
+
+.dp-highlighter div.line.alt2 div.content
+{
+	background-color: #fff;
 }
 
 .dp-highlighter a,
@@ -30,7 +86,7 @@
 
 .dp-highlighter .bar
 {
-	padding-left: 45px;
+	padding-left: 50px;
 }
 
 .dp-highlighter.collapsed .bar,
@@ -39,36 +95,6 @@
 	padding-left: 0px;
 }
 
-.dp-highlighter ol
-{
-	list-style: decimal; /* for ie */
-	background-color: #fff;
-	margin: 0px 0px 1px 45px !important; /* 1px bottom margin seems to fix occasional Firefox scrolling */
-	padding: 0px;
-	color: #5C5C5C;
-}
-
-.dp-highlighter.nogutter ol,
-.dp-highlighter.nogutter ol li
-{
-	list-style: none !important;
-	margin-left: 0px !important;
-}
-
-.dp-highlighter ol li,
-.dp-highlighter .columns div
-{
-	list-style: decimal-leading-zero; /* better look for others, override cascade from OL */
-	list-style-position: outside !important;
-	border-left: 3px solid #6CE26C;
-	background-color: #F8F8F8;
-	color: #5C5C5C;
-	padding: 0 3px 0 10px !important;
-	margin: 0 !important;
-	line-height: 14px;
-}
-
-.dp-highlighter.nogutter ol li,
 .dp-highlighter.nogutter .columns div
 {
 	border: 0;
@@ -85,18 +111,6 @@
 .dp-highlighter .columns div
 {
 	padding-bottom: 5px;
-}
-
-.dp-highlighter ol li.alt
-{
-	background-color: #FFF;
-	color: inherit;
-}
-
-.dp-highlighter ol li span
-{
-	color: black;
-	background-color: inherit;
 }
 
 /* Adjust some properties when collapsed */
@@ -179,7 +193,28 @@
 
 /* Language specific styles */
 
-.dp-highlighter .comment, .dp-highlighter .comments { color: #008200; background-color: inherit; }
-.dp-highlighter .string { color: blue; background-color: inherit; }
-.dp-highlighter .keyword { color: #069; font-weight: bold; background-color: inherit; }
-.dp-highlighter .preprocessor { color: gray; background-color: inherit; }
+.dp-highlighter .comment, 
+.dp-highlighter .comments 
+{ 
+	color: #008200;
+	background-color: inherit;
+}
+
+.dp-highlighter .string 
+{
+	color: blue; 
+	background-color: inherit; 
+}
+
+.dp-highlighter .keyword 
+{ 
+	color: #069; 
+	font-weight: bold; 
+	background-color: inherit; 
+}
+
+.dp-highlighter .preprocessor 
+{ 
+	color: gray; 
+	background-color: inherit; 
+}

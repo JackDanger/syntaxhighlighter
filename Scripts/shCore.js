@@ -1,9 +1,9 @@
 /**
  * Syntax Highlighter.
- * http://code.google.com/syntaxhighlighter/
+ * http://code.google.com/p/syntaxhighlighter/
  * 
  * @version
- * 1.5.1
+ * 1.6
  *
  * @author
  * Alex Gorbatchev
@@ -27,11 +27,11 @@
 var dp = {
 	sh :
 	{
-		Version : '1.5.1',
+		Version : '1.6',
 
 		Strings : 
 		{
-			aboutDialog : '<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://code.google.com/syntaxhighlighter" target="_blank">http://code.google.com/syntaxhighlighter</a></p>&copy;2004-2008 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'
+			aboutDialog : '<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://code.google.com/p/syntaxhighlighter/" target="_blank">http://code.google.com/p/syntaxhighlighter</a></p>&copy;2004-2008 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'
 		},
 		
 		ClipboardSwf : null,
@@ -216,6 +216,107 @@ var dp = {
 		Utils : 
 		{
 			/**
+			 * Turns all URLs in the code into A nodes.
+			 * 
+			 * @private
+			 * @param {String} code    Source code.
+			 * @return {String}        Returns code with all URLs replaced.
+			 */
+			processUrls: function(code)
+			{
+				return code.replace(dp.sh.RegexLib.url, function(m)
+				{
+					return '<a href="' + m + '">' + m + '</a>';
+				})
+			},
+
+			/**
+			 * Wraps each line of the string into <span/> tag with given
+			 * style applied to it.
+			 * 
+			 * @private
+			 * @param {String} str   Input string.
+			 * @param {String} css   Style name to apply to the string.
+			 * @return {String}      Returns input string with each line
+			 *                       surrounded by <span/> tag.
+			 */
+			decorateBit : function(str, css)
+			{
+				if (str === null || str.length === 0) 
+					return str;
+				
+				str = str.replace(/</g, '&lt;');
+		
+				// Replace two or more sequential spaces with
+				// &nbsp; leaving last space untouched.
+				str = str.replace(/ {2,}/g, function(m)
+				{
+					var spaces = '';
+					
+					for (var i = 0; i < m.length - 1; i++)
+						spaces += '&nbsp;';
+					
+					return spaces + ' ';
+				});
+				
+				if (css != null)
+					// make sure that every line gets style
+					str = str.replace(/^.*$/gm, function(m)
+					{
+						return '<span class="reset font ' + css + '">' + m + '</span>';
+					});
+
+				return str;
+			},
+	
+			/**
+			 * Pads number with zeros until it's length is the same as given length.
+			 * 
+			 * @param {Number} number	Number to pad.
+			 * @param {Number} length	Max string length with.
+			 */
+			padNumber : function(number, length)
+			{
+				var result = number.toString();
+				
+				while (result.length < length)
+					result = '0' + result;
+				
+				return result;
+			},
+			
+			/**
+			 * Measures width of a single space character.
+			 * 
+			 * @private
+			 * @return {Number} Returns width of a single space character.
+			 */
+			measureSpace : function()
+			{
+				var span = document.createElement("span");
+				
+				span.innerHTML = "&nbsp;";
+				span.className = "dp-highlighter reset font";
+				
+				document.body.appendChild(span);
+	
+				var result = 0;
+				
+				if (/opera/i.test(navigator.userAgent))
+				{
+					var style = window.getComputedStyle(span, null);
+					result = parseInt(style.getPropertyValue("width"));
+				}
+				else
+				{
+					result = span.offsetWidth;
+				}
+				
+				document.body.removeChild(span);
+				return result;
+			},
+			
+			/**
 			 * Replaces tabs with smart spaces. Each tab is assumed to be 4 spaces.
 			 * 
 			 * @private
@@ -287,16 +388,25 @@ var dp = {
 				return (dp.sh.isBloggerMode == true) ? str.replace(/<br\s*\/?>|&lt;br\s*\/?&gt;/gi, '\n') : str;
 			},
 			
+			/**
+			 * Removes all white space at the begining and end of a string.
+			 * 
+			 * @private
+			 * @param {String} str   String to trim.
+			 * @return {String}      Returns string without leading and following white space characters.
+			 */
 			trim: function(str)
 			{
-				return str.replace(/^\s*(.*?)[\s\n]*$/g, '$1');
+				return str.replace(/\s*$/g, '').replace(/^\s*/, '');
 			},
 			
-			chop: function(str)
-			{
-				return str.replace(/\n*$/, '').replace(/^\n*/, '');
-			},
-			
+			/**
+			 * Unindents a block of text by the lowest common indent amount.
+			 * 
+			 * @private
+			 * @param {String} str   Text to unindent.
+			 * @return {String}      Returns unindented text block.
+			 */
 			unindent: function(str)
 			{
 				var lines = dp.sh.Utils.fixForBlogger(str).split('\n');
@@ -328,11 +438,12 @@ var dp = {
 		// Common reusable regular expressions
 		RegexLib : 
 		{
-			MultiLineCComments : new RegExp('/\\*[\\s\\S]*?\\*/', 'gm'),
-			SingleLineCComments : new RegExp('//.*$', 'gm'),
-			SingleLinePerlComments : new RegExp('#.*$', 'gm'),
-			DoubleQuotedString : new RegExp('"(?:\\.|(\\\\\\")|[^\\""\\n])*"','g'),
-			SingleQuotedString : new RegExp("'(?:\\.|(\\\\\\')|[^\\''\\n])*'", 'g')
+			MultiLineCComments : /\/\*[\s\S]*?\*\//gm,
+			SingleLineCComments : /\/\/.*$/gm,
+			SingleLinePerlComments : /#.*$/gm,
+			DoubleQuotedString : /"(?:\.|(\\\")|[^\""\n])*"/g,
+			SingleQuotedString : /'(?:\.|(\\\')|[^\''\n])*'/g,
+			url : /\w+:\/\/[\w-.\/?%&=]*/g
 		}, // end of dp.sh.RegexLib
 
 		/**
@@ -431,7 +542,16 @@ dp.sh.Highlighter = function()
 	this.tabsToSpaces = true;
 	this.wrapColumn = 80;
 	this.showColumns = true;
-}
+	
+	this.firstLine = 1;
+	this.div = null;
+	this.lines = null;
+	
+	/**
+	 * Width of a single space.
+	 */
+	this.spaceWidth = dp.sh.Utils.measureSpace();
+};
 
 dp.sh.Highlighter.prototype = {
 	/**
@@ -443,7 +563,8 @@ dp.sh.Highlighter.prototype = {
 	 * @param {String} name   Name of the element to create (DIV, A, etc).
 	 * @return {Element}      Returns new object.
 	 */
-	createElement: function(name){
+	createElement: function(name)
+	{
 		var result = document.createElement(name);
 		result.highlighter = this;
 		return result;
@@ -532,13 +653,12 @@ dp.sh.Highlighter.prototype = {
 	},
 	
 	/**
-	 * Applies all regular expression to the code and returns all matches.
+	 * Applies all regular expression to the code and stores all found
+	 * matches in the `this.matches` array.
 	 * 
 	 * @private
-	 * 
-	 * @return {Array} List of all matches.
 	 */
-	getMatches: function()
+	findMatches: function()
 	{
 		var result = [];
 		
@@ -552,7 +672,7 @@ dp.sh.Highlighter.prototype = {
 		// sort the matches
 		result = result.sort(dp.sh.matchesSortCallback);
 
-		return result;
+		this.matches = result;
 	},
 	
 	setupRuler: function()
@@ -580,35 +700,6 @@ dp.sh.Highlighter.prototype = {
 		columns.appendChild(div);
 		this.bar.appendChild(columns);
 	},
-	
-	switchToList: function()
-	{
-		// thanks to Lachlan Donald from SitePoint.com for this <br/> tag fix.
-		var html = this.div.innerHTML.replace(/<(br)\/?>/gi, '\n');
-		var lines = html.split('\n');
-		
-		if (this.addControls == true) 
-			this.bar.appendChild(dp.sh.Toolbar.create(this));
-		
-		// add columns ruler
-		if (this.showColumns) 
-			this.setupRuler();
-		
-		for (var i = 0, lineIndex = this.firstLine; i < lines.length - 1; i++, lineIndex++) 
-		{
-			var li = this.createElement('LI');
-			var span = this.createElement('SPAN');
-			
-			// uses .line1 and .line2 css styles for alternating lines
-			li.className = (i % 2 === 0) ? 'alt' : '';
-			span.innerHTML = lines[i] + '&nbsp;';
-			
-			li.appendChild(span);
-			this.ol.appendChild(li);
-		}
-		
-		this.div.innerHTML = '';
-	},
 
 	removeNestedMatches: function()
 	{
@@ -620,6 +711,54 @@ dp.sh.Highlighter.prototype = {
 				this.matches[i] = null;
 	},
 	
+	splitIntoDivs : function(code)
+	{
+		var lines = code.split(/\n/g);
+		var padLength = (this.firstLine + lines.length).toString().length;
+		
+		code = '';
+		
+		for (var i = 0; i < lines.length; i++)
+		{
+			var line = lines[i];
+			var indent = /^(&nbsp;)+ /.exec(line);
+			var alt = (i % 2 == 0 ? 1 : 2);
+			var lineNumber = dp.sh.Utils.padNumber(this.firstLine + i, padLength);
+			
+			if (indent != null)
+			{
+				line = line.substr(indent[0].length);
+
+				//
+				// Six is '&nbsp;'.length.
+				//
+				// Five is added because last space bar in a sequence is 
+				// never converted to &nbsp; so we pad the length with the
+				// remaining 5 chanracters.
+				// 
+				indent = this.spaceWidth * (indent[0].length + 5) / 6; 
+			}
+			else
+			{
+				indent = 0;
+			}
+			
+			if (line.length == 0)
+				line = '&nbsp;';
+			
+			code += 
+				'<div class="font line alt' + alt + '">'
+					+ '<div class="number">' + lineNumber + '.</div>'
+					+ '<div class="content">'
+						+ '<div style="padding-left:' + indent + 'px;">' + line + '</div>'
+					+ '</div>'
+				+ '</div>'
+			;
+		}
+		
+		return code;
+	},
+	
 	processMatches: function()
 	{
 		// This function returns a portions of the string from pos1 to pos2 inclusive
@@ -629,6 +768,7 @@ dp.sh.Highlighter.prototype = {
 		}
 
 		var pos = 0;
+		var code = '';
 		
 		// Finally, go through the final list of matches and pull the all
 		// together adding everything in between that isn't a match.
@@ -639,41 +779,34 @@ dp.sh.Highlighter.prototype = {
 			if (match === null || match.length === 0) 
 				continue;
 			
-			this.addBit(copy(this.code, pos, match.index), null);
-			this.addBit(match.value, match.css);
-			
+			code += dp.sh.Utils.decorateBit(copy(this.code, pos, match.index), null);
+			code += dp.sh.Utils.decorateBit(match.value, match.css);
 			pos = match.index + match.length;
 		}
 		
-		this.addBit(this.code.substr(pos), null);
-		
-		this.switchToList();
-		this.div.appendChild(this.bar);
-		this.div.appendChild(this.ol);
+		code += dp.sh.Utils.decorateBit(this.code.substr(pos), null);
+		code = this.splitIntoDivs(code);
+		code = dp.sh.Utils.processUrls(code);
+
+		this.lines.innerHTML = code;
 	},
 	
 	highlight: function(code)
 	{
-				
 		if (code === null) 
 			code = '';
 		
 		this.originalCode = code;
-		this.code = dp.sh.Utils.chop(dp.sh.Utils.unindent(code));
+		this.code = dp.sh.Utils.trim(dp.sh.Utils.unindent(code));
 		this.div = this.createElement('DIV');
 		this.bar = this.createElement('DIV');
-		this.ol = this.createElement('OL');
+		this.lines = this.createElement('DIV');
 		
 		this.div.className = 'dp-highlighter';
-		this.div.highlighter = this;
-		
 		this.bar.className = 'bar';
 		
-		// set the first line
-		this.ol.start = this.firstLine;
-		
 		if (this.CssClass != null) 
-			this.ol.className = this.CssClass;
+			this.lines.className = this.CssClass;
 		
 		if (this.collapse) 
 			this.div.className += ' collapsed';
@@ -685,18 +818,17 @@ dp.sh.Highlighter.prototype = {
 		if (this.tabsToSpaces == true) 
 			this.code = dp.sh.Utils.processSmartTabs(this.code);
 		
-		this.matches = this.getMatches();
+		if (this.addControls == true) 
+			this.bar.appendChild(dp.sh.Toolbar.create(this));
 		
-		// if no matches found, add entire code as plain text
-		if (this.matches.length === 0) 
-		{
-			this.addBit(this.code, null);
-			this.switchToList();
-			this.div.appendChild(this.bar);
-			this.div.appendChild(this.ol);
-			return;
-		}
-		
+		// add columns ruler
+		if (this.showColumns)
+			this.setupRuler();
+
+		this.div.appendChild(this.bar);
+		this.div.appendChild(this.lines);
+
+		this.findMatches();
 		this.removeNestedMatches();
 		this.processMatches();
 	},
@@ -718,7 +850,7 @@ dp.sh.Highlighter.prototype = {
 	 */
 	GetKeywords: function(str)
 	{
-		this.getKeywords(str);
+		return this.getKeywords(str);
 	}
 
 }; // end of dp.sh.Highlighter class
@@ -827,33 +959,42 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		if (typeof(showGutter) === 'undefined')
 		{
 			highlighter.noGutter = IsOptionSet('nogutter', options);
-		} else {
+		} 
+		else 
+		{
 			highlighter.noGutter = !showGutter;
 		}
 
 		if (typeof(showControls) === 'undefined')
 		{
 			highlighter.addControls = !IsOptionSet('nocontrols', options);
-		} else {
+		} 
+		else 
+		{
 			highlighter.addControls = showControls;
 		}
 
 		if (typeof(collapseAll) === 'undefined')
 		{
 			highlighter.collapse = IsOptionSet('collapse', options);
-		} else {
+		} 
+		else 
+		{
 			highlighter.collapse = collapseAll;
 		}
 
 		if (typeof(showColumns) === 'undefined')
 		{
 			highlighter.showColumns = IsOptionSet('showcolumns', options);
-		} else {
+		} 
+		else 
+		{
 			highlighter.showColumns = showColumns;
 		}
 
 		// write out custom brush style
 		var headNode = document.getElementsByTagName('head')[0];
+		
 		if(highlighter.Style && headNode)
 		{
 			var styleNode = document.createElement('style');
@@ -873,7 +1014,7 @@ dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* o
 		}
 
 		// first line idea comes from Andrew Collington, thanks!
-		highlighter.firstLine = (firstLine === null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
+//		highlighter.firstLine = (firstLine === null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
 
 		highlighter.highlight(element[propertyName]);
 

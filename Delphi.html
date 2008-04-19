@@ -86,12 +86,13 @@ begin
 
   Number := 12356;
   Caption := 'The Number is ' + IntToStr(Number);
+  
   for I := 0 to Number do
   begin
     Inc(X);
 	{
-    Dec(X);
-    X := X * 1.0;
+      Dec(X);
+      X := X * 1.0;
 	}
     Y := $F5D3;
     ListBox1.Items.Add(IntToStr(X));
@@ -99,6 +100,7 @@ begin
 	(* 
 	ShowMessage('Hello'); *)
   end;
+  
   asm
     MOV AX,1234H
 //    MOV Number,AX
