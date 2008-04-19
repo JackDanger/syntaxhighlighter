@@ -531,21 +531,21 @@ dp.sh.Match.prototype = {
 	}
 };
 
-//
-// Highlighter object
-//
+/**
+ * Main Highlither class.
+ * 
+ * @constructor
+ */
 dp.sh.Highlighter = function()
 {
-	this.noGutter = false;
-	this.addControls = true;
-	this.collapse = false;
-	this.tabsToSpaces = true;
 	this.wrapColumn = 80;
-	this.showColumns = true;
 	
+	this.params = {};
 	this.firstLine = 1;
 	this.div = null;
 	this.lines = null;
+	this.code = null;
+	this.bar = null;
 	
 	/**
 	 * Width of a single space.
@@ -554,6 +554,18 @@ dp.sh.Highlighter = function()
 };
 
 dp.sh.Highlighter.prototype = {
+	/**
+	 * Returns value of the parameter passed to the highlighter.
+	 * 
+	 * @param {String} name           Name of the parameter.
+	 * @param {Object} defaultValue   Default value.
+	 */
+	getParam : function(name, defaultValue)
+	{
+		var result = this.params[name];
+		return result != null ? result : defaultValue;
+	},
+	
 	/**
 	 * Creates a new instance of a given element and sets its
 	 * `highlighter` property to the current class.
@@ -791,11 +803,37 @@ dp.sh.Highlighter.prototype = {
 		this.lines.innerHTML = code;
 	},
 	
-	highlight: function(code)
+	
+	/**
+	 * <p>Highlights the code and returns complete HTML.</p>
+	 * 
+	 * <p>The following parameters are accepted:</p>
+	 * <table>
+	 * <th>
+	 * 		<td>Name</td>
+	 * 		<td>Default</td>
+	 * 		<td>Description</td>
+	 * </th>
+	 * <tr>
+	 * 		<td>collapse</td>
+	 * 		<td>false</td>
+	 * 		<td>Makes entire code element invisible by default and adds '+ expand code' button to the tool bar.</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 *   * test
+	 *   * haha
+	 *   
+	 * @param {String} code     Code to highlight.
+	 * @param {Object} params   Parameters object.
+	 */
+	highlight: function(code, params)
 	{
 		if (code === null) 
 			code = '';
-		
+	
+		this.params = params;
+		this.highli
 		this.originalCode = code;
 		this.code = dp.sh.Utils.trim(dp.sh.Utils.unindent(code));
 		this.div = this.createElement('DIV');
@@ -805,24 +843,21 @@ dp.sh.Highlighter.prototype = {
 		this.div.className = 'dp-highlighter';
 		this.bar.className = 'bar';
 		
-		if (this.CssClass != null) 
-			this.lines.className = this.CssClass;
-		
-		if (this.collapse) 
+		if (this.getParam('collapse', false))
 			this.div.className += ' collapsed';
 		
-		if (this.noGutter) 
+		if (this.getParam('noGutter', false))
 			this.div.className += ' nogutter';
 		
 		// replace tabs with spaces
-		if (this.tabsToSpaces == true) 
+		if (this.getParam('tabsToSpaces', true)) 
 			this.code = dp.sh.Utils.processSmartTabs(this.code);
 		
-		if (this.addControls == true) 
+		if (this.getParam('addControls', true)) 
 			this.bar.appendChild(dp.sh.Toolbar.create(this));
 		
 		// add columns ruler
-		if (this.showColumns)
+		if (this.getParam('showColumns', false))
 			this.setupRuler();
 
 		this.div.appendChild(this.bar);
@@ -847,6 +882,7 @@ dp.sh.Highlighter.prototype = {
 	/**
 	 * Alias for getKeywords. Kept for compatability with older brushes.
 	 * @alias getKeywords
+	 * @deprecated This method is deprecated in favor of Highlighter.getKeywords
 	 */
 	GetKeywords: function(str)
 	{
