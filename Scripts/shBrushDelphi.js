@@ -33,9 +33,9 @@ dp.sh.Brushes.Delphi = function()
 					'widestring with word write writeln xor';
 
 	this.regexList = [
-		{ regex: new RegExp('\\(\\*[\\s\\S]*?\\*\\)', 'gm'),		css: 'comment' },  			// multiline comments (* *)
-		{ regex: new RegExp('{(?!\\$)[\\s\\S]*?}', 'gm'),			css: 'comment' },  			// multiline comments { }
-		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comment' },  			// one line
+		{ regex: new RegExp('\\(\\*[\\s\\S]*?\\*\\)', 'gm'),		css: 'comments' },  			// multiline comments (* *)
+		{ regex: new RegExp('{(?!\\$)[\\s\\S]*?}', 'gm'),			css: 'comments' },  			// multiline comments { }
+		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comments' },  			// one line
 		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// strings
 		{ regex: new RegExp('\\{\\$[a-zA-Z]+ .+\\}', 'g'),			css: 'directive' },			// Compiler Directives and Region tags
 		{ regex: new RegExp('\\b[\\d\\.]+\\b', 'g'),				css: 'number' },			// numbers 12345

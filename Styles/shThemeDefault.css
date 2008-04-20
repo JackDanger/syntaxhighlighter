@@ -1,0 +1,93 @@
+/**
+ * Default Syntax Highlighter theme.
+ */
+
+/************************************
+ * Interface elements.
+ ************************************/
+.dp-highlighter
+{
+	background-color: #E7E5DC;
+}
+
+/* Gutter line numbers */
+.dp-highlighter div.line div.number
+{
+	color: #5C5C5C;
+}
+
+/* Add border and margin on the lines */
+.dp-highlighter div.line div.content
+{
+	border-left: 3px solid #6CE26C;
+}
+
+/* First line */
+.dp-highlighter div.line.alt1 div.content
+{
+	background-color: #F8F8F8;
+}
+
+/* Second line */
+.dp-highlighter div.line.alt2 div.content
+{
+	background-color: #fff;
+}
+
+/* Toolbar when visible */
+.dp-highlighter .toolbar
+{
+	color: silver;
+	background-color: #f8f8f8;
+	border-left: 3px solid #6CE26C;
+}
+
+.dp-highlighter .toolbar a
+{
+	color: #a0a0a0;
+}
+
+.dp-highlighter .toolbar a:hover
+{
+	color: red;
+}
+
+/************************************
+ * Actual syntax highlighter colors.
+ ************************************/
+.dp-highlighter .comments 
+{ 
+	color: #008200;
+}
+
+.dp-highlighter .string 
+{
+	color: blue; 
+}
+
+.dp-highlighter .keyword 
+{ 
+	color: #069; 
+	font-weight: bold; 
+}
+
+.dp-highlighter .preprocessor 
+{ 
+	color: gray; 
+}
+
+.dp-highlighter .variable 
+{ 
+	color: #a70; 
+	font-weight: bold; 
+}
+
+.dp-highlighter .value
+{ 
+	color: #000; 
+}
+
+.dp-highlighter .important
+{ 
+	color: red; 
+}

@@ -21,7 +21,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>dp.SyntaxHighlighter Tests</title>
-<link type="text/css" rel="stylesheet" href="Styles/SyntaxHighlighter.css"></link>
+<link type="text/css" rel="stylesheet" href="Styles/shCore.css"></link>
+<link type="text/css" rel="stylesheet" href="Styles/shThemeDefault.css"></link>
 <link href="Styles/TestPages.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -74,7 +75,7 @@
 <!-- InstanceBeginEditable name="Code" -->
 <h3>Using textarea</h3>
 
-<textarea name="code" class="xml" rows="15" cols="100">
+<textarea class="brush: xml" rows="15" cols="100">
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Test case for issue #14 (http://code.google.com/p/syntaxhighlighter/issues/detail?id=14) -->
 <!-- Comment 1 -->Some Text<!-- Comment 2 -->
@@ -105,7 +106,7 @@
 
 <h3>Using pre</h3>
 
-<pre name="code" class="xml">
+<pre class="brush: xml">
 &lt;?xml version="1.0" encoding="utf-8" ?> 
 
 &lt;!-- comments -->
@@ -159,7 +160,7 @@ if(window.isBloggerMode == true)
 	dp.SyntaxHighlighter.BloggerMode();
 
 dp.SyntaxHighlighter.ClipboardSwf = 'Scripts/clipboard.swf';
-dp.SyntaxHighlighter.HighlightAll('code');
+dp.SyntaxHighlighter.highlight();
 </script>
 
 </body>

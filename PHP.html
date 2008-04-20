@@ -21,7 +21,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>dp.SyntaxHighlighter Tests</title>
-<link type="text/css" rel="stylesheet" href="Styles/SyntaxHighlighter.css"></link>
+<link type="text/css" rel="stylesheet" href="Styles/shCore.css"></link>
+<link type="text/css" rel="stylesheet" href="Styles/shThemeDefault.css"></link>
 <link href="Styles/TestPages.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -72,7 +73,7 @@
 <div class="column2">
 <div class="block-box">Block before.</div>
 <!-- InstanceBeginEditable name="Code" -->
-<pre name="code" class="php">
+<pre class="brush: php">
 /***********************************
  ** Multiline block comments
  **********************************/
@@ -122,7 +123,7 @@ if(window.isBloggerMode == true)
 	dp.SyntaxHighlighter.BloggerMode();
 
 dp.SyntaxHighlighter.ClipboardSwf = 'Scripts/clipboard.swf';
-dp.SyntaxHighlighter.HighlightAll('code');
+dp.SyntaxHighlighter.highlight();
 </script>
 
 </body>

@@ -52,7 +52,7 @@ dp.sh.Brushes.CSS = function()
 	var fonts =		'[mM]onospace [tT]ahoma [vV]erdana [aA]rial [hH]elvetica [sS]ans-serif [sS]erif';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.MultiLineCComments,						css: 'comment' },	// multiline comments
+		{ regex: dp.sh.RegexLib.MultiLineCComments,						css: 'comments' },	// multiline comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,						css: 'string' },	// double quoted strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,						css: 'string' },	// single quoted strings
 		{ regex: new RegExp('\\#[a-zA-Z0-9]{3,6}', 'g'),				css: 'value' },		// html colors
@@ -62,10 +62,6 @@ dp.sh.Brushes.CSS = function()
 		{ regex: new RegExp(this.GetValuesCSS(values), 'g'),			css: 'value' },		// values
 		{ regex: new RegExp(this.GetValuesCSS(fonts), 'g'),				css: 'value' }		// fonts
 		];
-
-	this.CssClass = 'dp-css';
-	this.Style =	'.dp-css .value { color: black; }' +
-					'.dp-css .important { color: red; }';
 };
 
 dp.sh.Highlighter.prototype.GetKeywordsCSS = function(str)
@@ -80,6 +76,7 @@ dp.sh.Highlighter.prototype.GetValuesCSS = function(str)
 
 dp.sh.Brushes.CSS.prototype	= new dp.sh.Highlighter();
 dp.sh.Brushes.CSS.Aliases	= ['css'];
+
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t

@@ -21,7 +21,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>dp.SyntaxHighlighter Tests</title>
-<link type="text/css" rel="stylesheet" href="../Styles/SyntaxHighlighter.css"></link>
+<link type="text/css" rel="stylesheet" href="../Styles/shCore.css"></link>
 <link href="../Styles/TestPages.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -75,7 +75,7 @@
 Test for <a href="http://code.google.com/p/syntaxhighlighter/issues/detail?id=15">issue #15</a>.
 
 Must properly highlight 'hello'.
-<pre name="code" class="js">// This comment has a ' character.
+<pre class="brush: js">// This comment has a ' character.
 line_ok();
 a_string = 'hello';
 line_bad();
@@ -108,7 +108,7 @@ if(window.isBloggerMode == true)
 	dp.SyntaxHighlighter.BloggerMode();
 
 dp.SyntaxHighlighter.ClipboardSwf = 'Scripts/clipboard.swf';
-dp.SyntaxHighlighter.HighlightAll('code');
+dp.SyntaxHighlighter.highlight();
 </script>
 
 </body>

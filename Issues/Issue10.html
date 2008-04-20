@@ -21,7 +21,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>dp.SyntaxHighlighter Tests</title>
-<link type="text/css" rel="stylesheet" href="../Styles/SyntaxHighlighter.css"></link>
+<link type="text/css" rel="stylesheet" href="../Styles/shCore.css"></link>
 <link href="../Styles/TestPages.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -72,7 +72,7 @@
 <div class="column2">
 <div class="block-box">Block before.</div>
 <!-- InstanceBeginEditable name="Code" -->
-<pre name="code" class="vb">
+<pre class="brush: vb">
 Imports System
 Imports System.Collections.Generic
 Imports System.Text
@@ -365,7 +365,7 @@ if(window.isBloggerMode == true)
 	dp.SyntaxHighlighter.BloggerMode();
 
 dp.SyntaxHighlighter.ClipboardSwf = 'Scripts/clipboard.swf';
-dp.SyntaxHighlighter.HighlightAll('code');
+dp.SyntaxHighlighter.highlight();
 </script>
 
 </body>

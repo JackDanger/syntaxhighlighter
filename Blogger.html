@@ -21,7 +21,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>dp.SyntaxHighlighter Tests</title>
-<link type="text/css" rel="stylesheet" href="Styles/SyntaxHighlighter.css"></link>
+<link type="text/css" rel="stylesheet" href="Styles/shCore.css"></link>
+<link type="text/css" rel="stylesheet" href="Styles/shThemeDefault.css"></link>
 <link href="Styles/TestPages.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -74,9 +75,9 @@
 <!-- InstanceBeginEditable name="Code" -->
 <p>Blogger has a nasty habit of replacing all new lines with &lt;br/> tags which makes it impossible to post code snippets.</p>
 <p>To fix the situation version 1.5.1 introduces "Blogger Mode" which can be enabled before a call to HighlightAll() by a call to BloggerMode() like in the example below:</p>
-<pre name="code" class="js">
+<pre class="brush: js">
 dp.SyntaxHighlighter.BloggerMode();
-dp.SyntaxHighlighter.HighlightAll('code');
+dp.SyntaxHighlighter.highlight();
 </pre>
 <script type="text/javascript">
 window.isBloggerMode = true;
@@ -90,7 +91,7 @@ window.isBloggerMode = true;
 
 <p>Here's the highlighted result:</p>
 
-<pre name="code" class="js">
+<pre class="brush: js">
 &lt;script type='text/javascript'><br />_WidgetManager._Init=function(){};<br />_WidgetManager._SetPageActionUrl=function(){};<br />_WidgetManager._SetDataContext=function(){};<br />_WidgetManager._SetSystemMarkup=function(){};<br />_WidgetManager._RegisterWidget=function(){};<br />&lt;/script>
 </pre>
 <!-- InstanceEndEditable -->
@@ -120,7 +121,7 @@ if(window.isBloggerMode == true)
 	dp.SyntaxHighlighter.BloggerMode();
 
 dp.SyntaxHighlighter.ClipboardSwf = 'Scripts/clipboard.swf';
-dp.SyntaxHighlighter.HighlightAll('code');
+dp.SyntaxHighlighter.highlight();
 </script>
 
 </body>

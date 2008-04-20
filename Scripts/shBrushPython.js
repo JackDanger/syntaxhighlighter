@@ -27,9 +27,9 @@ dp.sh.Brushes.Python = function()
     var special =  'None True False self cls class_';
 
     this.regexList = [
-        { regex: dp.sh.RegexLib.SingleLinePerlComments, css: 'comment' },
+        { regex: dp.sh.RegexLib.SingleLinePerlComments, css: 'comments' },
         { regex: new RegExp("^\\s*@\\w+", 'gm'), css: 'decorator' },
-        { regex: new RegExp("(['\"]{3})([^\\1])*?\\1", 'gm'), css: 'comment' },
+        { regex: new RegExp("(['\"]{3})([^\\1])*?\\1", 'gm'), css: 'comments' },
         { regex: new RegExp('"(?!")(?:\\.|\\\\\\"|[^\\""\\n\\r])*"', 'gm'), css: 'string' },
         { regex: new RegExp("'(?!')*(?:\\.|(\\\\\\')|[^\\''\\n\\r])*'", 'gm'), css: 'string' },
         { regex: new RegExp("\\b\\d+\\.?\\w*", 'g'), css: 'number' },

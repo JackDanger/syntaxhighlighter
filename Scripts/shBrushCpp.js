@@ -58,8 +58,8 @@ dp.sh.Brushes.Cpp = function()
 	'using uuid virtual void volatile whcar_t while';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comment' },			// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comment' },			// multiline comments
+		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comments' },			// one line comments
+		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comments' },			// multiline comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// strings
 		{ regex: new RegExp('^ *#.*', 'gm'),						css: 'preprocessor' },

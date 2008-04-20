@@ -26,8 +26,8 @@ dp.sh.Brushes.JScript = function()
 					'synchronized this throw throws transient true try typeof var void volatile while with';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comment' },			// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comment' },			// multiline comments
+		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comments' },			// one line comments
+		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comments' },			// multiline comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// double quoted strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// single quoted strings
 		{ regex: new RegExp('^\\s*#.*', 'gm'),						css: 'preprocessor' },		// preprocessor tags like #region and #endregion

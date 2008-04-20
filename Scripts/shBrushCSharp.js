@@ -32,11 +32,11 @@ dp.sh.Brushes.CSharp = function()
 		// a difference between // and ///. Using lookahead and lookbehind solves the
 		// problem, unfortunately JavaScript doesn't support lookbehind. So I'm at a
 		// loss how to translate that regular expression to JavaScript compatible one.
-//		{ regex: new RegExp('(?<!/)//(?!/).*$|(?<!/)////(?!/).*$|/\\*[^\\*]*(.)*?\\*/', 'gm'),	css: 'comment' },			// one line comments starting with anything BUT '///' and multiline comments
+//		{ regex: new RegExp('(?<!/)//(?!/).*$|(?<!/)////(?!/).*$|/\\*[^\\*]*(.)*?\\*/', 'gm'),	css: 'comments' },			// one line comments starting with anything BUT '///' and multiline comments
 //		{ regex: new RegExp('(?<!/)///(?!/).*$', 'gm'),											css: 'comments' },		// XML comments starting with ///
 
-		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comment' },			// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comment' },			// multiline comments
+		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comments' },			// one line comments
+		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comments' },			// multiline comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// strings
 		{ regex: new RegExp('^\\s*#.*', 'gm'),						css: 'preprocessor' },		// preprocessor tags like #region and #endregion

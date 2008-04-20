@@ -23,7 +23,6 @@
 
 .dp-highlighter
 {
-	background-color: #E7E5DC;
 	width: 99%;
 	overflow: auto;
 	margin: 18px 0 18px 0 !important;
@@ -38,7 +37,6 @@
 
 .dp-highlighter div.line div.number
 {
-	color: #5C5C5C;
 	float: left; 
 	width: 45px; 
 	text-align: right;
@@ -50,12 +48,10 @@
 	display: none;
 }
 
-/* Add border and margin on the lines */
 .dp-highlighter div.line div.content
 {
 	margin-left: 50px; 
 	padding-left: 4px; 
-	border-left: 3px solid #6CE26C;
 }
 
 /* Disable border and margin on the lines when no gutter option is set */
@@ -63,16 +59,6 @@
 {
 	margin-left: 0; 
 	border-left: none;
-}
-
-.dp-highlighter div.line.alt1 div.content
-{
-	background-color: #F8F8F8;
-}
-
-.dp-highlighter div.line.alt2 div.content
-{
-	background-color: #fff;
 }
 
 .dp-highlighter a,
@@ -144,39 +130,31 @@
 
 /* Styles for the tools */
 
-.dp-highlighter .tools
+.dp-highlighter .toolbar
 {
 	padding: 3px 8px 3px 10px;
 	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
-	color: silver;
-	background-color: #f8f8f8;
 	padding-bottom: 10px;
-	border-left: 3px solid #6CE26C;
 }
 
-.dp-highlighter.nogutter .tools
+.dp-highlighter.nogutter .toolbar
 {
 	border-left: 0;
 }
 
-.dp-highlighter.collapsed .tools
+.dp-highlighter.collapsed .toolbar
 {
 	border-bottom: 0;
 }
 
-.dp-highlighter .tools a
+.dp-highlighter .toolbar a
 {
-	font-size: 9px;
-	color: #a0a0a0;
-	background-color: inherit;
 	text-decoration: none;
 	margin-right: 10px;
 }
 
-.dp-highlighter .tools a:hover
+.dp-highlighter .toolbar a:hover
 {
-	color: red;
-	background-color: inherit;
 	text-decoration: underline;
 }
 
@@ -190,31 +168,3 @@
 .dp-about .para { margin: 0 0 4px 0; }
 .dp-about .footer { background-color: #ECEADB; color: #333; border-top: 1px solid #fff; text-align: right; }
 .dp-about .close { font-size: 11px; font-family: Tahoma, Verdana, Arial, sans-serif !important; background-color: #ECEADB; color: #333; width: 60px; height: 22px; }
-
-/* Language specific styles */
-
-.dp-highlighter .comment, 
-.dp-highlighter .comments 
-{ 
-	color: #008200;
-	background-color: inherit;
-}
-
-.dp-highlighter .string 
-{
-	color: blue; 
-	background-color: inherit; 
-}
-
-.dp-highlighter .keyword 
-{ 
-	color: #069; 
-	font-weight: bold; 
-	background-color: inherit; 
-}
-
-.dp-highlighter .preprocessor 
-{ 
-	color: gray; 
-	background-color: inherit; 
-}

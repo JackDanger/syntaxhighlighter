@@ -29,7 +29,7 @@ dp.sh.Brushes.Ruby = function()
 					'ThreadGroup Thread Time TrueClass';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLinePerlComments,			css: 'comment' },	// one line comments
+		{ regex: dp.sh.RegexLib.SingleLinePerlComments,			css: 'comments' },	// one line comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,				css: 'string' },	// double quoted strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,				css: 'string' },	// single quoted strings
 		{ regex: new RegExp(':[a-z][A-Za-z0-9_]*', 'g'),		css: 'symbol' },	// symbols

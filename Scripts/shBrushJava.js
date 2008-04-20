@@ -28,8 +28,8 @@ dp.sh.Brushes.Java = function()
 			'transient try void volatile while';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLineCComments,							css: 'comment' },		// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,								css: 'comment' },		// multiline comments
+		{ regex: dp.sh.RegexLib.SingleLineCComments,							css: 'comments' },		// one line comments
+		{ regex: dp.sh.RegexLib.MultiLineCComments,								css: 'comments' },		// multiline comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,								css: 'string' },		// strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,								css: 'string' },		// strings
 		{ regex: new RegExp('\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b', 'gi'),	css: 'number' },		// numbers

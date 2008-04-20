@@ -49,7 +49,7 @@ var dp = {
 			{
 				var div = document.createElement('DIV');
 			
-				div.className = 'tools';
+				div.className = 'toolbar';
 			
 				for(var name in dp.sh.Toolbar.Commands)
 				{
@@ -215,6 +215,19 @@ var dp = {
 		
 		Utils : 
 		{
+			parseParams: function(str)
+			{
+				var match, 
+					result = {},
+					regex = /([\w-]+)\s*:\s*([\w-]+)/g
+					;
+				
+				while ((match = regex.exec(str)) != null) 
+					result[match[1]] = (match[2] != null) ? match[2] : true;
+				
+				return result;
+			},
+			
 			/**
 			 * Turns all URLs in the code into A nodes.
 			 * 
@@ -832,8 +845,9 @@ dp.sh.Highlighter.prototype = {
 		if (code === null) 
 			code = '';
 	
-		this.params = params;
-		this.highli
+		if (params != null)
+			this.params = params;
+			
 		this.originalCode = code;
 		this.code = dp.sh.Utils.trim(dp.sh.Utils.unindent(code));
 		this.div = this.createElement('DIV');
@@ -892,170 +906,53 @@ dp.sh.Highlighter.prototype = {
 }; // end of dp.sh.Highlighter class
 
 // highlightes all elements identified by name and gets source code from specified property
-dp.sh.HighlightAll = function(name, showGutter /* optional */, showControls /* optional */, collapseAll /* optional */, firstLine /* optional */, showColumns /* optional */)
+dp.sh.highlight = function(element)
 {
-	function FindValue()
-	{
-		var a = arguments;
-
-		for(var i = 0; i < a.length; i++)
-		{
-			if(a[i] === null)
-				continue;
-
-			if(typeof(a[i]) == 'string' && a[i] != '')
-				return a[i] + '';
-
-			if(typeof(a[i]) == 'object' && a[i].value != '')
-				return a[i].value + '';
-		}
-
-		return null;
-	}
-
-	function IsOptionSet(value, list)
-	{
-		for(var i = 0; i < list.length; i++)
-			if(list[i] == value)
-				return true;
-
-		return false;
-	}
-
-	function GetOptionValue(name, list, defaultValue)
-	{
-		var regex = new RegExp('^' + name + '\\[(\\w+)\\]$', 'gi');
-		var matches = null;
-
-		for(var i = 0; i < list.length; i++)
-			if((matches = regex.exec(list[i])) != null)
-				return matches[1];
-
-		return defaultValue;
-	}
-
-	function FindTagsByName(list, name, tagName)
-	{
-		var tags = document.getElementsByTagName(tagName);
-
-		for(var i = 0; i < tags.length; i++)
-			if(tags[i].getAttribute('name') == name)
-				list.push(tags[i]);
-	}
-
-	var elements = [];
-	var highlighter = null;
-	var registered = {};
-	var propertyName = 'innerHTML';
-
-	// for some reason IE doesn't find <pre/> by name, however it does see them just fine by tag name...
-	FindTagsByName(elements, name, 'pre');
-	FindTagsByName(elements, name, 'textarea');
+	var elements = element ? [element] : document.getElementsByTagName('pre'),
+		propertyName = 'innerHTML',
+		highlighter = null,
+		brushes = {}
+		;
 
 	if(elements.length === 0)
 		return;
 
-	// register all brushes
-	for(var brush in dp.sh.Brushes)
+	// Find all brushes
+	for (var brush in dp.sh.Brushes)
 	{
 		var aliases = dp.sh.Brushes[brush].Aliases;
 
-		if(aliases === null)
+		if (aliases === null)
 			continue;
 
-		for(var i = 0; i < aliases.length; i++)
-			registered[aliases[i]] = brush;
+		for (var i = 0; i < aliases.length; i++)
+			brushes[aliases[i]] = brush;
 	}
 
-	for(var i = 0; i < elements.length; i++)
+	for (var i = 0; i < elements.length; i++)
 	{
-		var element = elements[i];
-		var options = FindValue(
-				element.attributes['class'], element.className,
-				element.attributes['language'], element.language
-				);
-		var language = '';
+		var element = elements[i],
+			params = dp.sh.Utils.parseParams(element.className),
+			brush = brushes[params['brush']]
+			;
 
-		if(options === null)
-			continue;
-
-		options = options.split(':');
-
-		language = options[0].toLowerCase();
-
-		if(registered[language] === null)
+		if(brush == null)
 			continue;
 
 		// instantiate a brush
-		highlighter = new dp.sh.Brushes[registered[language]]();
+		highlighter = new dp.sh.Brushes[brush]();
 
 		// hide the original element
 		element.style.display = 'none';
 
-		if (typeof(showGutter) === 'undefined')
-		{
-			highlighter.noGutter = IsOptionSet('nogutter', options);
-		} 
-		else 
-		{
-			highlighter.noGutter = !showGutter;
-		}
-
-		if (typeof(showControls) === 'undefined')
-		{
-			highlighter.addControls = !IsOptionSet('nocontrols', options);
-		} 
-		else 
-		{
-			highlighter.addControls = showControls;
-		}
-
-		if (typeof(collapseAll) === 'undefined')
-		{
-			highlighter.collapse = IsOptionSet('collapse', options);
-		} 
-		else 
-		{
-			highlighter.collapse = collapseAll;
-		}
-
-		if (typeof(showColumns) === 'undefined')
-		{
-			highlighter.showColumns = IsOptionSet('showcolumns', options);
-		} 
-		else 
-		{
-			highlighter.showColumns = showColumns;
-		}
-
-		// write out custom brush style
-		var headNode = document.getElementsByTagName('head')[0];
-		
-		if(highlighter.Style && headNode)
-		{
-			var styleNode = document.createElement('style');
-			styleNode.setAttribute('type', 'text/css');
-
-			if(styleNode.styleSheet) // for IE
-			{
-				styleNode.styleSheet.cssText = highlighter.Style;
-			}
-			else // for everyone else
-			{
-				var textNode = document.createTextNode(highlighter.Style);
-				styleNode.appendChild(textNode);
-			}
-
-			headNode.appendChild(styleNode);
-		}
-
-		// first line idea comes from Andrew Collington, thanks!
+//			highlighter.noGutter = IsOptionSet('nogutter', options);
+//			highlighter.addControls = !IsOptionSet('nocontrols', options);
+//			highlighter.collapse = IsOptionSet('collapse', options);
+//			highlighter.showColumns = IsOptionSet('showcolumns', options);
 //		highlighter.firstLine = (firstLine === null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
 
-		highlighter.highlight(element[propertyName]);
-
+		highlighter.highlight(element[propertyName], params);
 		highlighter.source = element;
-
 		element.parentNode.insertBefore(highlighter.div, element);
 	}
 }

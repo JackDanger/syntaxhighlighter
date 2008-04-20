@@ -35,7 +35,7 @@ dp.sh.Brushes.Vb = function()
 					'Variant When While With WithEvents WriteOnly Xor';
 
 	this.regexList = [
-		{ regex: new RegExp('\'.*$', 'gm'),							css: 'comment' },			// one line comments
+		{ regex: new RegExp('\'.*$', 'gm'),							css: 'comments' },			// one line comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// strings
 		{ regex: new RegExp('^\s*#.*$', 'gm'),						css: 'preprocessor' },		// preprocessor tags like #region and #endregion
 		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),		css: 'keyword' }			// vb keyword
