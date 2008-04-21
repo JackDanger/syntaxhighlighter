@@ -25,13 +25,13 @@
 /* First line */
 .dp-highlighter div.line.alt1 div.content
 {
-	background-color: #F8F8F8;
+	background-color: #fff;
 }
 
 /* Second line */
 .dp-highlighter div.line.alt2 div.content
 {
-	background-color: #fff;
+	background-color: #F8F8F8;
 }
 
 /* Toolbar when visible */
