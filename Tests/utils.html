@@ -38,7 +38,7 @@
 				assertEquals('  <a href="http://...">http://...</a>  ', dp.sh.Utils.processUrls('  http://...  '));
 			}
 			
-			function test_parseParams()
+			function test_parseParams_simple_string()
 			{
 				function test(str, name, expected)
 				{
@@ -50,6 +50,23 @@
 				test("language:c-sharp", "language", "c-sharp");
 				test("firstLine:10; language:c-sharp;", "firstLine", "10");
 				test("firstLine: 10; language: c-sharp;", "language", "c-sharp");
+			}
+			
+			function test_parseParams_array_values()
+			{
+				var result = dp.sh.Utils.parseParams("highlight-lines: [2, 4]");
+				assertNotUndefined("Shouldn't be null", result["highlight-lines"]);
+				assertUndefined("Shouldn't be a string", result["highlight-lines"].substr);
+				assertEquals("Array values should match", "2, 4", result["highlight-lines"].join(", "));
+			}
+			
+			function test_inArray()
+			{
+				var array = [1, 2, 3, "hello"];
+				
+				assertTrue("1", dp.sh.Utils.inArray(array, 1));
+				assertTrue("hello", dp.sh.Utils.inArray(array, "hello"));
+				assertFalse("10", dp.sh.Utils.inArray(array, 10));
 			}
 		</script>
 	</body>

@@ -31,13 +31,14 @@ ksort($brushes);
 // Features demo
 //
 $features = array(
-    'SmartTabs'     => 'Smart tabs',
-    'FirstLine'     => 'First line',
-    'CollapseCode'  => 'Expand code',
-    'ShowColumns'   => 'Ruler',
-    'Blogger'       => 'Blogger integration',
-    'NoGutter'      => 'Hide gutter',
-    'NoControls'    => 'Hide controls'
+    'SmartTabs'     	=> 'Smart tabs',
+    'FirstLine'     	=> 'First line',
+    'CollapseCode'  	=> 'Expand code',
+    'ShowColumns'   	=> 'Ruler',
+    'Blogger'       	=> 'Blogger integration',
+    'NoGutter'      	=> 'Hide gutter',
+    'NoControls'    	=> 'Hide controls',
+    'HighlightedLines'	=> 'Highlighted lines'
 );
 ksort($features);
 

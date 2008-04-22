@@ -10,6 +10,19 @@
 	background-color: #E7E5DC;
 }
 
+/* Highlighed line number */
+.dp-highlighter div.line.highlighted div.number
+{
+	background-color: #6CE26C;
+	color: black;
+}
+
+/* Highlighed line */
+.dp-highlighter div.line.highlighted div.content
+{
+	background-color: #CFFFCF !important;
+}
+
 /* Gutter line numbers */
 .dp-highlighter div.line div.number
 {

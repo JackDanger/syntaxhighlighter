@@ -215,15 +215,44 @@ var dp = {
 		
 		Utils : 
 		{
+			/**
+			 * Checks if a value is present in array.
+			 * 
+			 * @private
+			 * @param {Array} array    Array to check.
+			 * @param {Object} value   Value to check.
+			 * @return {Boolean}       Returns true if value is present, false otherwise.
+			 */
+			inArray: function(array, value)
+			{
+				for (var i in array)
+					if (array[i] === value)
+						return true;
+						
+				return false;
+			},
+			
 			parseParams: function(str)
 			{
 				var match, 
 					result = {},
-					regex = /([\w-]+)\s*:\s*([\w-]+)/g
+					arrayRegex = /^\[(.*?)\]$/,
+					regex = /([\w-]+)\s*:\s*(([\w-]+)|(\[.*?\]))/g
 					;
 				
 				while ((match = regex.exec(str)) != null) 
-					result[match[1]] = (match[2] != null) ? match[2] : true;
+				{
+					var value = match[2];
+					
+					// try to parse array value
+					if (value != null && arrayRegex.test(value))
+					{
+						var m = arrayRegex.exec(value);
+						value = (m != null) ? m[1].split(/\s*,\s*/) : null;
+					}
+					
+					result[match[1]] = value;
+				}
 				
 				return result;
 			},
@@ -335,13 +364,13 @@ var dp = {
 			 * @private
 			 * 
 			 * @param {String} code    Code to fix the tabs in.
+			 * @param {Number} tabSize Number of spaces in a column.
 			 * @return {String}        Returns code with all tabs replaces with roper amount of spaces.
 			 */
-			processSmartTabs : function(code)
+			processSmartTabs : function(code, tabSize)
 			{
 				var lines = code.split('\n');
 				var result = '';
-				var tabSize = 4;
 				var tab = '\t';
 				
 				// This function inserts specified amount of spaces in the string
@@ -424,7 +453,7 @@ var dp = {
 			{
 				var lines = dp.sh.Utils.fixForBlogger(str).split('\n');
 				var indents = new Array();
-				var regex = new RegExp('^\\s*', 'g');
+				var regex = /^\s*/g;
 				var min = 1000;
 				
 				// go through every line and check for common number of indents
@@ -749,18 +778,25 @@ dp.sh.Highlighter.prototype = {
 	
 	splitIntoDivs : function(code)
 	{
-		var lines = code.split(/\n/g);
-		var firstLine = parseInt(this.getParam("first-line", 1));
-		var padLength = (firstLine + lines.length).toString().length;
+		var lines = code.split(/\n/g),
+			firstLine = parseInt(this.getParam("first-line", 1)),
+			padLength = (firstLine + lines.length).toString().length,
+			highlightedLines = this.getParam("highlight-lines", [])
+			;
+		
+		if (highlightedLines != null && highlightedLines.join == null)
+			highlightedLines == [highlightedLines];
 		
 		code = '';
-		
+
 		for (var i = 0; i < lines.length; i++)
 		{
-			var line = lines[i];
-			var indent = /^(&nbsp;)+ /.exec(line);
-			var alt = (i % 2 == 0 ? 1 : 2);
-			var lineNumber = dp.sh.Utils.padNumber(firstLine + i, padLength);
+			var line = lines[i],
+				indent = /^(&nbsp;)+ /.exec(line),
+				lineClass = 'font line alt' + (i % 2 == 0 ? 1 : 2),
+				lineNumber = dp.sh.Utils.padNumber(firstLine + i, padLength),
+				highlighted = dp.sh.Utils.inArray(highlightedLines, (firstLine + i).toString())
+				;
 			
 			if (indent != null)
 			{
@@ -780,11 +816,14 @@ dp.sh.Highlighter.prototype = {
 				indent = 0;
 			}
 			
+			if (highlighted)
+				lineClass += ' highlighted';
+				
 			if (line.length == 0)
 				line = '&nbsp;';
 			
 			code += 
-				'<div class="font line alt' + alt + '">'
+				'<div class="' + lineClass + '">'
 					+ '<div class="number">' + lineNumber + '.</div>'
 					+ '<div class="content">'
 						+ '<div style="padding-left:' + indent + 'px;">' + line + '</div>'
@@ -833,6 +872,7 @@ dp.sh.Highlighter.prototype = {
 	 * <p>Highlights the code and returns complete HTML.</p>
 	 * 
 	 * <p>The following parameters are accepted:</p>
+	 * 
 	 * <table>
 	 * <th>
 	 * 		<td>Name</td>
@@ -843,6 +883,26 @@ dp.sh.Highlighter.prototype = {
 	 * 		<td>collapse</td>
 	 * 		<td>false</td>
 	 * 		<td>Makes entire code element invisible by default and adds '+ expand code' button to the tool bar.</td>
+	 * </tr>
+	 * <tr>
+	 * 		<td>gutter</td>
+	 * 		<td>true</td>
+	 * 		<td>Hides the gutter with line numbers when <code>false</code>.</td>
+	 * </tr>
+	 * <tr>
+	 * 		<td>gutter</td>
+	 * 		<td>true</td>
+	 * 		<td>Hides the gutter with line numbers when <code>false</code>.</td>
+	 * </tr>
+	 * <tr>
+	 * 		<td>smart-tabs</td>
+	 * 		<td>true</td>
+	 * 		<td>Converts tabs to spaces using <code>smart-tabs-size</code> value.</td>
+	 * </tr>
+	 * <tr>
+	 * 		<td>smart-tabs-size</td>
+	 * 		<td>4</td>
+	 * 		<td>Number of spaces in a smart tab column.</td>
 	 * </tr>
 	 * </table>
 	 * 
@@ -877,8 +937,8 @@ dp.sh.Highlighter.prototype = {
 			this.div.className += ' nogutter';
 		
 		// replace tabs with spaces
-		if (this.getParam('tabsToSpaces', true)) 
-			this.code = dp.sh.Utils.processSmartTabs(this.code);
+		if (this.getParam('smart-tabs', true)) 
+			this.code = dp.sh.Utils.processSmartTabs(this.code, this.getParam('smart-tabs-size', 4));
 		
 		if (this.getParam('controls', true)) 
 			this.bar.appendChild(dp.sh.Toolbar.create(this));
@@ -915,7 +975,6 @@ dp.sh.Highlighter.prototype = {
 	{
 		return this.getKeywords(str);
 	}
-
 }; // end of dp.sh.Highlighter class
 
 // highlightes all elements identified by name and gets source code from specified property
@@ -957,12 +1016,6 @@ dp.sh.highlight = function(element)
 
 		// hide the original element
 		element.style.display = 'none';
-
-//			highlighter.noGutter = IsOptionSet('nogutter', options);
-//			highlighter.addControls = !IsOptionSet('nocontrols', options);
-//			highlighter.collapse = IsOptionSet('collapse', options);
-//			highlighter.showColumns = IsOptionSet('showcolumns', options);
-//		highlighter.firstLine = (firstLine === null) ? parseInt(GetOptionValue('firstline', options, 1)) : firstLine;
 
 		highlighter.highlight(element[propertyName], params);
 		highlighter.source = element;
