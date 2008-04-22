@@ -816,10 +816,12 @@ dp.sh.Highlighter.prototype = {
 				indent = 0;
 			}
 			
+			line = dp.sh.Utils.trim(line);
+			
 			if (highlighted)
 				lineClass += ' highlighted';
 				
-			if (line.length == 0)
+			if (line.length == 0) 
 				line = '&nbsp;';
 			
 			code += 
