@@ -81,32 +81,17 @@
 	padding-left: 0px;
 }
 
-.dp-highlighter.nogutter .columns div
+.dp-highlighter .ruler
 {
-	border: 0;
-}
-
-.dp-highlighter .columns
-{
-	background-color: #F8F8F8;
-	color: gray;
+	padding-left: 4px;
 	overflow: hidden;
-	width: 100%;
-}
-
-.dp-highlighter .columns div
-{
-	padding-bottom: 5px;
+	padding-bottom: 2px;
 }
 
 /* Adjust some properties when collapsed */
 
-.dp-highlighter.collapsed ol
-{
-	margin: 0px;
-}
-
-.dp-highlighter.collapsed ol li
+.dp-highlighter.collapsed .lines,
+.dp-highlighter.collapsed .ruler
 {
 	display: none;
 }

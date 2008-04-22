@@ -97,7 +97,7 @@ var dp = {
 					label : '+ expand source',
 					check : function(highlighter) 
 					{
-						return highlighter.collapse; 
+						return highlighter.getParam('collapse', false);
 					},
 					func : function(sender, highlighter)
 					{
@@ -554,7 +554,6 @@ dp.sh.Highlighter = function()
 	this.wrapColumn = 80;
 	
 	this.params = {};
-	this.firstLine = 1;
 	this.div = null;
 	this.lines = null;
 	this.code = null;
@@ -576,6 +575,18 @@ dp.sh.Highlighter.prototype = {
 	getParam : function(name, defaultValue)
 	{
 		var result = this.params[name];
+		
+		switch (result)
+		{
+			case "false":
+				result = false;
+				break;
+				
+			case "true":
+				result = true;
+				break;
+		}
+		
 		return result != null ? result : defaultValue;
 	},
 	
@@ -703,7 +714,7 @@ dp.sh.Highlighter.prototype = {
 	setupRuler: function()
 	{
 		var div = this.createElement('div');
-		var columns = this.createElement('div');
+		var ruler = this.createElement('div');
 		var showEvery = 10;
 		var i = 1;
 		
@@ -721,9 +732,9 @@ dp.sh.Highlighter.prototype = {
 			}
 		}
 		
-		columns.className = 'columns';
-		columns.appendChild(div);
-		this.bar.appendChild(columns);
+		ruler.className = 'ruler font line';
+		ruler.appendChild(div);
+		this.bar.appendChild(ruler);
 	},
 
 	removeNestedMatches: function()
@@ -739,7 +750,8 @@ dp.sh.Highlighter.prototype = {
 	splitIntoDivs : function(code)
 	{
 		var lines = code.split(/\n/g);
-		var padLength = (this.firstLine + lines.length).toString().length;
+		var firstLine = parseInt(this.getParam("first-line", 1));
+		var padLength = (firstLine + lines.length).toString().length;
 		
 		code = '';
 		
@@ -748,7 +760,7 @@ dp.sh.Highlighter.prototype = {
 			var line = lines[i];
 			var indent = /^(&nbsp;)+ /.exec(line);
 			var alt = (i % 2 == 0 ? 1 : 2);
-			var lineNumber = dp.sh.Utils.padNumber(this.firstLine + i, padLength);
+			var lineNumber = dp.sh.Utils.padNumber(firstLine + i, padLength);
 			
 			if (indent != null)
 			{
@@ -854,24 +866,25 @@ dp.sh.Highlighter.prototype = {
 		this.bar = this.createElement('DIV');
 		this.lines = this.createElement('DIV');
 		
+		this.lines.className = 'lines';
 		this.div.className = 'dp-highlighter';
 		this.bar.className = 'bar';
 		
 		if (this.getParam('collapse', false))
 			this.div.className += ' collapsed';
 		
-		if (this.getParam('noGutter', false))
+		if (this.getParam('gutter', true) == false)
 			this.div.className += ' nogutter';
 		
 		// replace tabs with spaces
 		if (this.getParam('tabsToSpaces', true)) 
 			this.code = dp.sh.Utils.processSmartTabs(this.code);
 		
-		if (this.getParam('addControls', true)) 
+		if (this.getParam('controls', true)) 
 			this.bar.appendChild(dp.sh.Toolbar.create(this));
 		
 		// add columns ruler
-		if (this.getParam('showColumns', false))
+		if (this.getParam('ruler', false))
 			this.setupRuler();
 
 		this.div.appendChild(this.bar);

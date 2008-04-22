@@ -16,7 +16,7 @@
 	color: #5C5C5C;
 }
 
-/* Add border and margin on the lines */
+/* Add border to the lines */
 .dp-highlighter div.line div.content
 {
 	border-left: 3px solid #6CE26C;
@@ -35,10 +35,11 @@
 }
 
 /* Toolbar when visible */
-.dp-highlighter .toolbar
+.dp-highlighter div.toolbar,
+.dp-highlighter div.ruler
 {
 	color: silver;
-	background-color: #f8f8f8;
+	background-color: #F8F8F8;
 	border-left: 3px solid #6CE26C;
 }
 
