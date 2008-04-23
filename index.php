@@ -38,7 +38,8 @@ $features = array(
     'Blogger'       	=> 'Blogger integration',
     'NoGutter'      	=> 'Hide gutter',
     'NoControls'    	=> 'Hide controls',
-    'HighlightedLines'	=> 'Highlighted lines'
+    'HighlightedLines'	=> 'Highlighted lines',
+	'AutoUrls'			=> 'Auto Links'
 );
 ksort($features);
 

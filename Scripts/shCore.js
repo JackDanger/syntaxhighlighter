@@ -776,6 +776,14 @@ dp.sh.Highlighter.prototype = {
 				this.matches[i] = null;
 	},
 	
+	/**
+	 * Splits block of text into individual DIV lines.
+	 * Generates the whole visual aspect of the highlighted code.
+	 * 
+	 * @private 
+	 * @param {String} code     Code to highlight.
+	 * @return {String}         Returns highlighted code in HTML form.
+	 */
 	splitIntoDivs : function(code)
 	{
 		var lines = code.split(/\n/g),
@@ -845,8 +853,10 @@ dp.sh.Highlighter.prototype = {
 			return string.substr(pos1, pos2 - pos1);
 		}
 
-		var pos = 0;
-		var code = '';
+		var pos = 0, 
+			code = '',
+			decorateBit = dp.sh.Utils.decorateBit
+			;
 		
 		// Finally, go through the final list of matches and pull the all
 		// together adding everything in between that isn't a match.
@@ -857,14 +867,16 @@ dp.sh.Highlighter.prototype = {
 			if (match === null || match.length === 0) 
 				continue;
 			
-			code += dp.sh.Utils.decorateBit(copy(this.code, pos, match.index), null);
-			code += dp.sh.Utils.decorateBit(match.value, match.css);
+			code += decorateBit(copy(this.code, pos, match.index), null);
+			code += decorateBit(match.value, match.css);
 			pos = match.index + match.length;
 		}
 		
-		code += dp.sh.Utils.decorateBit(this.code.substr(pos), null);
-		code = this.splitIntoDivs(code);
-		code = dp.sh.Utils.processUrls(code);
+		code += decorateBit(this.code.substr(pos), null);
+		code = this.splitIntoDivs(dp.sh.Utils.trim(code));
+		
+		if (this.getParam('auto-links', true))
+			code = dp.sh.Utils.processUrls(code);
 
 		this.lines.innerHTML = code;
 	},
@@ -907,10 +919,7 @@ dp.sh.Highlighter.prototype = {
 	 * 		<td>Number of spaces in a smart tab column.</td>
 	 * </tr>
 	 * </table>
-	 * 
-	 *   * test
-	 *   * haha
-	 *   
+	 *
 	 * @param {String} code     Code to highlight.
 	 * @param {Object} params   Parameters object.
 	 */
