@@ -325,7 +325,7 @@ var dp = {
 					{
 						if (line.length == 0) 
 							return '';
-						
+							
 						var spaces = '';
 						
 						line = line.replace(/^(&nbsp;| )+/, function(s)
@@ -934,7 +934,9 @@ dp.sh.Highlighter.prototype = {
 			this.div.className += ' nogutter';
 
 		this.originalCode = code;
-		this.code = dp.sh.Utils.trimFirstAndLastLines(code);
+		this.code = dp.sh.Utils.trimFirstAndLastLines(code)
+			.replace(/\r/g, ' ') // IE lets these buggers through
+			;
 		
 		// replace tabs with spaces
 		if (this.getParam('smart-tabs', true)) 
