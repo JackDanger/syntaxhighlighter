@@ -553,18 +553,24 @@ var dp = {
 			 * @private
 			 * 
 			 * @param {String} code    Code to execute regular expression on.
-			 * @param {RegExp} regex   Regular expression to execute.
-			 * @param {Object} css     Class name associated with the current regular expression.
+			 * @param {Object} regex   Regular expression item info from <code>regexList</code> collection.
 			 * @return {Array}         Returns a list of Match objects.
 			 */ 
-			getMatches: function(code, regex, css)
+			getMatches: function(code, regexInfo)
 			{
-				var index = 0;
-				var match = null;
-				var result = [];
+				function defaultAdd(match, regexInfo)
+				{
+					return [new dp.sh.Match(match[0], match.index, regexInfo.css)];
+				};
 				
-				while((match = regex.exec(code)) != null)
-					result.push(new dp.sh.Match(match[0], match.index, css));
+				var index = 0,
+					match = null,
+					result = [],
+					func = regexInfo.func ? regexInfo.func : defaultAdd;
+					;
+				
+				while((match = regexInfo.regex.exec(code)) != null)
+					result = result.concat(func(match, regexInfo));
 					
 				return result;
 			}
@@ -712,10 +718,7 @@ dp.sh.Highlighter.prototype = {
 		
 		if (this.regexList != null)
 			for (var i = 0; i < this.regexList.length; i++) 
-			{
-				var item = this.regexList[i];
-				result = result.concat(dp.sh.Utils.getMatches(this.code, item.regex, item.css));
-			}
+				result = result.concat(dp.sh.Utils.getMatches(this.code, this.regexList[i]));
 		
 		// sort the matches
 		result = result.sort(dp.sh.Utils.matchesSortCallback);

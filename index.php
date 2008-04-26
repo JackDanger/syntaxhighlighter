@@ -23,7 +23,8 @@ $brushes = array(
     'Python'    => 'Python',
     'Ruby'      => 'Ruby',
     'Css'       => 'CSS',
-    'Cpp'       => 'C++'
+    'Cpp'       => 'C++',
+	'Plain'		=> 'Plain Text'
 );
 ksort($brushes);
 
@@ -163,7 +164,7 @@ function url($param, $value)
         
         <? if ($show_source): ?>
             <h3>Actual source code</h3>
-            <pre class="brush: xml"><?= htmlspecialchars($sample); ?></pre>
+            <pre class="brush: plain"><?= htmlspecialchars($sample); ?></pre>
         <? endif; ?>
     <? endif; ?>
 </div>
