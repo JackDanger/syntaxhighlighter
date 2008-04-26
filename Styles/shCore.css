@@ -35,6 +35,16 @@
 	font-family: "Consolas", "Monaco", "Courier New", Courier, monospace;
 }
 
+.dp-highlighter .bold
+{ 
+	font-weight: bold;
+}
+
+.dp-highlighter .italic
+{ 
+	font-style: italic;
+}
+
 .dp-highlighter div.line div.number
 {
 	float: left; 

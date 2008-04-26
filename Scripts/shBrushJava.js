@@ -28,23 +28,19 @@ dp.sh.Brushes.Java = function()
 			'transient try void volatile while';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLineCComments,							css: 'comments' },		// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,								css: 'comments' },		// multiline comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,								css: 'string' },		// strings
-		{ regex: dp.sh.RegexLib.SingleQuotedString,								css: 'string' },		// strings
-		{ regex: new RegExp('\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b', 'gi'),	css: 'number' },		// numbers
-		{ regex: new RegExp('(?!\\@interface\\b)\\@[\\$\\w]+\\b', 'g'),			css: 'annotation' },	// annotation @anno
-		{ regex: new RegExp('\\@interface\\b', 'g'),							css: 'keyword' },		// @interface keyword
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),					css: 'keyword' }		// java keyword
+		{ regex: dp.sh.RegexLib.singleLineCComments,			css: 'comments' },		// one line comments
+		{ regex: dp.sh.RegexLib.multiLineCComments,				css: 'comments' },		// multiline comments
+		{ regex: dp.sh.RegexLib.doubleQuotedString,				css: 'string' },		// strings
+		{ regex: dp.sh.RegexLib.singleQuotedString,				css: 'string' },		// strings
+		{ regex: /\b([\d]+(\.[\d]+)?|0x[a-f0-9]+)\b/gi,			css: 'value' },			// numbers
+		{ regex: /(?!\@interface\b)\@[\$\w]+\b/g,				css: 'color1' },		// annotation @anno
+		{ regex: /\@interface\b/g,								css: 'keyword' },		// @interface keyword
+		{ regex: new RegExp(this.getKeywords(keywords), 'gm'),	css: 'keyword' }		// java keyword
 		];
-
-	this.CssClass = 'dp-j';
-	this.Style =	'.dp-j .annotation { color: #646464; }' +
-					'.dp-j .number { color: #C00000; }';
 };
 
 dp.sh.Brushes.Java.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.Java.Aliases	= ['java'];
+dp.sh.Brushes.Java.aliases	= ['java'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t

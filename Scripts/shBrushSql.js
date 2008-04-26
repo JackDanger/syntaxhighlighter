@@ -44,21 +44,17 @@ dp.sh.Brushes.Sql = function()
 	var operators =	'all and any between cross in join like not null or outer some';
 
 	this.regexList = [
-		{ regex: new RegExp('--(.*)$', 'gm'),						css: 'comments' },			// one line and multiline comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// double quoted strings
-		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// single quoted strings
-		{ regex: new RegExp(this.GetKeywords(funcs), 'gmi'),		css: 'func' },				// functions
-		{ regex: new RegExp(this.GetKeywords(operators), 'gmi'),	css: 'op' },				// operators and such
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gmi'),		css: 'keyword' }			// keyword
+		{ regex: /--(.*)$/gm,										css: 'comments' },			// one line and multiline comments
+		{ regex: dp.sh.RegexLib.doubleQuotedString,					css: 'string' },			// double quoted strings
+		{ regex: dp.sh.RegexLib.singleQuotedString,					css: 'string' },			// single quoted strings
+		{ regex: new RegExp(this.getKeywords(funcs), 'gmi'),		css: 'color2' },			// functions
+		{ regex: new RegExp(this.getKeywords(operators), 'gmi'),	css: 'color1' },			// operators and such
+		{ regex: new RegExp(this.getKeywords(keywords), 'gmi'),		css: 'keyword' }			// keyword
 		];
-
-	this.CssClass = 'dp-sql';
-	this.Style =	'.dp-sql .func { color: #ff1493; }' +
-					'.dp-sql .op { color: #808080; }';
 };
 
 dp.sh.Brushes.Sql.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.Sql.Aliases	= ['sql'];
+dp.sh.Brushes.Sql.aliases	= ['sql'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t

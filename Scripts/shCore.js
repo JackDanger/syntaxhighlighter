@@ -303,7 +303,7 @@ var dp = {
 			 */
 			decorateBit: function(str, css)
 			{
-				if (str == null || str.length == 0) 
+				if (str == null || str.length == 0 || str == '\n') 
 					return str;
 				
 				str = str.replace(/</g, '&lt;');
@@ -570,14 +570,16 @@ var dp = {
 			}
 		}, // end of dp.sh.Utils
 		
-		// Common reusable regular expressions
+		/**
+		 * Common regular expressions.
+		 */
 		RegexLib : 
 		{
-			MultiLineCComments		: /\/\*[\s\S]*?\*\//gm,
-			SingleLineCComments		: /\/\/.*$/gm,
-			SingleLinePerlComments	: /#.*$/gm,
-			DoubleQuotedString		: /"(?:\.|(\\\")|[^\""\n])*"/g,
-			SingleQuotedString		: /'(?:\.|(\\\')|[^\''\n])*'/g,
+			multiLineCComments		: /\/\*[\s\S]*?\*\//gm,
+			singleLineCComments		: /\/\/.*$/gm,
+			singleLinePerlComments	: /#.*$/gm,
+			doubleQuotedString		: /"(?:\.|(\\\")|[^\""\n])*"/g,
+			singleQuotedString		: /'(?:\.|(\\\')|[^\''\n])*'/g,
 			url						: /\w+:\/\/[\w-.\/?%&=]*/g
 		}, // end of dp.sh.RegexLib
 
@@ -965,16 +967,6 @@ dp.sh.Highlighter.prototype = {
 	getKeywords: function(str)
 	{
 		return '\\b' + str.replace(/ /g, '\\b|\\b') + '\\b';
-	},
-	
-	/**
-	 * Alias for getKeywords. Kept for compatability with older brushes.
-	 * @alias getKeywords
-	 * @deprecated This method is deprecated in favor of Highlighter.getKeywords
-	 */
-	GetKeywords: function(str)
-	{
-		return this.getKeywords(str);
 	}
 }; // end of dp.sh.Highlighter class
 
@@ -987,13 +979,13 @@ dp.sh.highlight = function(element)
 		brushes = {}
 		;
 
-	if(elements.length === 0)
+	if (elements.length === 0)
 		return;
 
 	// Find all brushes
 	for (var brush in dp.sh.Brushes)
 	{
-		var aliases = dp.sh.Brushes[brush].Aliases;
+		var aliases = dp.sh.Brushes[brush].aliases;
 
 		if (aliases === null)
 			continue;

@@ -35,17 +35,15 @@ dp.sh.Brushes.Vb = function()
 					'Variant When While With WithEvents WriteOnly Xor';
 
 	this.regexList = [
-		{ regex: new RegExp('\'.*$', 'gm'),							css: 'comments' },			// one line comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// strings
-		{ regex: new RegExp('^\s*#.*$', 'gm'),						css: 'preprocessor' },		// preprocessor tags like #region and #endregion
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),		css: 'keyword' }			// vb keyword
+		{ regex: /'.*$/gm,										css: 'comments' },			// one line comments
+		{ regex: dp.sh.RegexLib.doubleQuotedString,				css: 'string' },			// strings
+		{ regex: /^\s*#.*$/gm,									css: 'preprocessor' },		// preprocessor tags like #region and #endregion
+		{ regex: new RegExp(this.getKeywords(keywords), 'gm'),	css: 'keyword' }			// vb keyword
 		];
-
-	this.CssClass = 'dp-vb';
 };
 
 dp.sh.Brushes.Vb.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.Vb.Aliases	= ['vb', 'vb.net'];
+dp.sh.Brushes.Vb.aliases	= ['vb', 'vbnet'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t

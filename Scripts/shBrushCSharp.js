@@ -35,20 +35,17 @@ dp.sh.Brushes.CSharp = function()
 //		{ regex: new RegExp('(?<!/)//(?!/).*$|(?<!/)////(?!/).*$|/\\*[^\\*]*(.)*?\\*/', 'gm'),	css: 'comments' },			// one line comments starting with anything BUT '///' and multiline comments
 //		{ regex: new RegExp('(?<!/)///(?!/).*$', 'gm'),											css: 'comments' },		// XML comments starting with ///
 
-		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comments' },			// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comments' },			// multiline comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// strings
-		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// strings
-		{ regex: new RegExp('^\\s*#.*', 'gm'),						css: 'preprocessor' },		// preprocessor tags like #region and #endregion
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),		css: 'keyword' }			// c# keyword
+		{ regex: dp.sh.RegexLib.singleLineCComments,				css: 'comments' },			// one line comments
+		{ regex: dp.sh.RegexLib.multiLineCComments,					css: 'comments' },			// multiline comments
+		{ regex: dp.sh.RegexLib.doubleQuotedString,					css: 'string' },			// strings
+		{ regex: dp.sh.RegexLib.singleQuotedString,					css: 'string' },			// strings
+		{ regex: /^\s*#.*/gm,										css: 'preprocessor' },		// preprocessor tags like #region and #endregion
+		{ regex: new RegExp(this.getKeywords(keywords), 'gm'),		css: 'keyword' }			// c# keyword
 		];
-
-	this.CssClass = 'dp-c';
-	this.Style = '.dp-c .vars { color: #d00; }';
 };
 
 dp.sh.Brushes.CSharp.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.CSharp.Aliases	= ['c#', 'c-sharp', 'csharp'];
+dp.sh.Brushes.CSharp.aliases	= ['c#', 'c-sharp', 'csharp'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t

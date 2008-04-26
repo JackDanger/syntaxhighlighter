@@ -101,15 +101,29 @@
 .dp-highlighter .variable 
 { 
 	color: #a70; 
-	font-weight: bold; 
 }
 
 .dp-highlighter .value
 { 
-	color: #000; 
+	color: #090; 
 }
 
-.dp-highlighter .important
+.dp-highlighter .functions
+{ 
+	color: #ff1493; 
+}
+
+.dp-highlighter .color1
+{ 
+	color: #808080; 
+}
+
+.dp-highlighter .color2
+{ 
+	color: #ff1493; 
+}
+
+.dp-highlighter .color3
 { 
 	color: red; 
 }

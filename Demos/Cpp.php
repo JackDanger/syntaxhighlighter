@@ -14,7 +14,7 @@ $sample = <<<EOF
 	#include &lt;time.h>
 	#include &lt;stdio.h>
 	
-	int nInt = 0;
+	USHORT nInt = 0;
 	int nStart = 0;
 	int nEnd = 0;
 	char buf[255];

@@ -63,20 +63,18 @@ dp.sh.Brushes.Php = function()
 					'__METHOD__ abstract interface public implements extends private protected throw';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comments' },			// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comments' },			// multiline comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// double quoted strings
-		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// single quoted strings
-		{ regex: new RegExp('\\$\\w+', 'g'),						css: 'vars' },				// variables
-		{ regex: new RegExp(this.GetKeywords(funcs), 'gmi'),		css: 'func' },				// functions
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),		css: 'keyword' }			// keyword
+		{ regex: dp.sh.RegexLib.singleLineCComments,				css: 'comments' },			// one line comments
+		{ regex: dp.sh.RegexLib.multiLineCComments,					css: 'comments' },			// multiline comments
+		{ regex: dp.sh.RegexLib.doubleQuotedString,					css: 'string' },			// double quoted strings
+		{ regex: dp.sh.RegexLib.singleQuotedString,					css: 'string' },			// single quoted strings
+		{ regex: /\$\w+/g,											css: 'variable' },			// variables
+		{ regex: new RegExp(this.getKeywords(funcs), 'gmi'),		css: 'functions' },			// common functions
+		{ regex: new RegExp(this.getKeywords(keywords), 'gm'),		css: 'keyword' }			// keyword
 		];
-
-	this.CssClass = 'dp-c';
 };
 
 dp.sh.Brushes.Php.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.Php.Aliases	= ['php'];
+dp.sh.Brushes.Php.aliases	= ['php'];
 // Local Variables:
 // mode: javascript
 // indent-tabs-mode: t
