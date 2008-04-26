@@ -216,6 +216,19 @@ var dp = {
 		Utils : 
 		{
 			/**
+			 * This is a special trim which only removes first and last empty lines
+			 * and doesn't affect valid leading space on the first line.
+			 * 
+			 * @private
+			 * @param {String} str   Input string
+			 * @return {String}      Returns string without empty first and last lines.
+			 */
+			trimFirstAndLastLines: function(str)
+			{
+				return str.replace(/^[ ]*[\n]+|[\n]*[ ]*$/g, '');
+			},
+		
+			/**
 			 * Checks if a value is present in array.
 			 * 
 			 * @private
@@ -232,6 +245,13 @@ var dp = {
 				return false;
 			},
 			
+			/**
+			 * Parses "name: value; name: [value, value]" style string into hash object.
+			 * 
+			 * @private
+			 * @param {String} str    Input string.
+			 * @return {Object}       Returns deserialized object.
+			 */
 			parseParams: function(str)
 			{
 				var match, 
@@ -279,18 +299,16 @@ var dp = {
 			 * @private
 			 * @param {String} str   Input string.
 			 * @param {String} css   Style name to apply to the string.
-			 * @return {String}      Returns input string with each line
-			 *                       surrounded by <span/> tag.
+			 * @return {String}      Returns input string with each line surrounded by <span/> tag.
 			 */
-			decorateBit : function(str, css)
+			decorateBit: function(str, css)
 			{
-				if (str === null || str.length === 0) 
+				if (str == null || str.length == 0) 
 					return str;
 				
 				str = str.replace(/</g, '&lt;');
 		
-				// Replace two or more sequential spaces with
-				// &nbsp; leaving last space untouched.
+				// Replace two or more sequential spaces with &nbsp; leaving last space untouched.
 				str = str.replace(/ {2,}/g, function(m)
 				{
 					var spaces = '';
@@ -303,9 +321,23 @@ var dp = {
 				
 				if (css != null)
 					// make sure that every line gets style
-					str = str.replace(/^.*$/gm, function(m)
+					str = str.replace(/^.*$/gm, function(line)
 					{
-						return '<span class="reset font ' + css + '">' + m + '</span>';
+						if (line.length == 0) 
+							return '';
+						
+						var spaces = '';
+						
+						line = line.replace(/^(&nbsp;| )+/, function(s)
+						{
+							spaces = s;
+							return '';
+						});
+
+						if (line.length == 0)
+							return spaces;
+
+						return spaces + '<span class="reset font ' + css + '">' + line + '</span>';
 					});
 
 				return str;
@@ -369,23 +401,25 @@ var dp = {
 			 */
 			processSmartTabs : function(code, tabSize)
 			{
-				var lines = code.split('\n');
-				var result = '';
-				var tab = '\t';
+				var lines = code.split('\n'),
+					tab = '\t',
+					spaces = ''
+					;
 				
+				// Create a string with 1000 spaces to copy spaces from... 
+				// It's assumed that there would be no indentation longer than that.
+				for (var i = 0; i < 50; i++) 
+					spaces += '                    '; // 20 spaces * 50
+						
 				// This function inserts specified amount of spaces in the string
 				// where a tab is while removing that given tab.
 				function insertSpaces(line, pos, count)
 				{
-					var left = line.substr(0, pos);
-					var right = line.substr(pos + 1, line.length); // pos + 1 will get rid of the tab
-					var spaces = '';
-					
-					for (var i = 0; i < count; i++) 
-						spaces += ' ';
-					
-					return left + spaces + right;
-				}
+					return line.substr(0, pos)
+						+ spaces.substr(0, count)
+						+ line.substr(pos + 1, line.length) // pos + 1 will get rid of the tab
+						;
+				};
 				
 				// This function process one line for 'smart tabs'
 				function processLine(line, tabSize)
@@ -406,13 +440,13 @@ var dp = {
 					}
 					
 					return line;
-				}
+				};
 				
 				// Go through all the lines and do the 'smart tabs' magic.
-				for (var i = 0; i < lines.length; i++) 
-					result += processLine(lines[i], tabSize) + '\n';
-				
-				return result;
+				return code.replace(/^.*$/gm, function(m)
+				{
+					return processLine(m, tabSize);
+				});
 			},
 	
 			// copies all <link rel="stylesheet" /> from 'target' window to 'dest'
@@ -451,21 +485,28 @@ var dp = {
 			 */
 			unindent: function(str)
 			{
-				var lines = dp.sh.Utils.fixForBlogger(str).split('\n');
-				var indents = new Array();
-				var regex = /^\s*/g;
-				var min = 1000;
+				var lines = dp.sh.Utils.fixForBlogger(str).split('\n'),
+					indents = new Array(),
+					regex = /^\s*/,
+					min = 1000
+					;
 				
 				// go through every line and check for common number of indents
 				for (var i = 0; i < lines.length && min > 0; i++) 
 				{
-					if (dp.sh.Utils.trim(lines[i]).length === 0) 
+					var line = lines[i];
+					
+					if (dp.sh.Utils.trim(line).length == 0) 
 						continue;
 					
-					var matches = regex.exec(lines[i]);
+					var matches = regex.exec(line);
 					
-					if (matches != null && matches.length > 0) 
-						min = Math.min(matches[0].length, min);
+					// In the event that just one line doesn't have leading white space
+					// we can't unindent anything, so bail completely.
+					if (matches == null) 
+						return str;
+						
+					min = Math.min(matches[0].length, min);
 				}
 				
 				// trim minimum common number of white space from the begining of every line
@@ -474,18 +515,70 @@ var dp = {
 						lines[i] = lines[i].substr(min);
 				
 				return lines.join('\n');
+			},
+		
+			/**
+			 * Callback method for Array.sort() which sorts matches by
+			 * index position and then by length.
+			 * 
+			 * @private
+			 * 
+			 * @param {Match} m1	Left object.
+			 * @param {Match} m2    Right object.
+			 * @return {Number}     Returns -1, 0 or -1 as a comparison result.
+			 */
+			matchesSortCallback: function(m1, m2)
+			{
+				// sort matches by index first
+				if(m1.index < m2.index)
+					return -1;
+				else if(m1.index > m2.index)
+					return 1;
+				else
+				{
+					// if index is the same, sort by length
+					if(m1.length < m2.length)
+						return -1;
+					else if(m1.length > m2.length)
+						return 1;
+				}
+				
+				return 0;
+			},
+		
+			/**
+			 * Executes given regular expression on provided code and returns all
+			 * matches that are found.
+			 * 
+			 * @private
+			 * 
+			 * @param {String} code    Code to execute regular expression on.
+			 * @param {RegExp} regex   Regular expression to execute.
+			 * @param {Object} css     Class name associated with the current regular expression.
+			 * @return {Array}         Returns a list of Match objects.
+			 */ 
+			getMatches: function(code, regex, css)
+			{
+				var index = 0;
+				var match = null;
+				var result = [];
+				
+				while((match = regex.exec(code)) != null)
+					result.push(new dp.sh.Match(match[0], match.index, css));
+					
+				return result;
 			}
 		}, // end of dp.sh.Utils
 		
 		// Common reusable regular expressions
 		RegexLib : 
 		{
-			MultiLineCComments : /\/\*[\s\S]*?\*\//gm,
-			SingleLineCComments : /\/\/.*$/gm,
-			SingleLinePerlComments : /#.*$/gm,
-			DoubleQuotedString : /"(?:\.|(\\\")|[^\""\n])*"/g,
-			SingleQuotedString : /'(?:\.|(\\\')|[^\''\n])*'/g,
-			url : /\w+:\/\/[\w-.\/?%&=]*/g
+			MultiLineCComments		: /\/\*[\s\S]*?\*\//gm,
+			SingleLineCComments		: /\/\/.*$/gm,
+			SingleLinePerlComments	: /#.*$/gm,
+			DoubleQuotedString		: /"(?:\.|(\\\")|[^\""\n])*"/g,
+			SingleQuotedString		: /'(?:\.|(\\\')|[^\''\n])*'/g,
+			url						: /\w+:\/\/[\w-.\/?%&=]*/g
 		}, // end of dp.sh.RegexLib
 
 		/**
@@ -496,60 +589,8 @@ var dp = {
 		BloggerMode : function()
 		{
 			dp.sh.isBloggerMode = true;
-		},
-		
-		/**
-		 * Callback method for Array.sort() which sorts matches by
-		 * index position and then by length.
-		 * 
-		 * @private
-		 * 
-		 * @param {Match} m1	Left object.
-		 * @param {Match} m2    Right object.
-		 * @return {Number}     Returns -1, 0 or -1 as a comparison result.
-		 */
-		matchesSortCallback : function(m1, m2)
-		{
-			// sort matches by index first
-			if(m1.index < m2.index)
-				return -1;
-			else if(m1.index > m2.index)
-				return 1;
-			else
-			{
-				// if index is the same, sort by length
-				if(m1.length < m2.length)
-					return -1;
-				else if(m1.length > m2.length)
-					return 1;
-			}
-			
-			return 0;
-		},
-	
-		/**
-		 * Executes given regular expression on provided code and returns all
-		 * matches that are found.
-		 * 
-		 * @private
-		 * 
-		 * @param {String} code    Code to execute regular expression on.
-		 * @param {RegExp} regex   Regular expression to execute.
-		 * @param {Object} css     Class name associated with the current regular expression.
-		 * @return {Array}         Returns a list of Match objects.
-		 */ 
-		getMatches : function(code, regex, css)
-		{
-			var index = 0;
-			var match = null;
-			var result = [];
-			
-			while((match = regex.exec(code)) != null)
-				result.push(new dp.sh.Match(match[0], match.index, css));
-				
-			return result;
 		}
-	} // end of dp.sh.Utils
+	} // end of dp.sh
 };
 
 // make an alias to the actual namespace
@@ -580,8 +621,6 @@ dp.sh.Match.prototype = {
  */
 dp.sh.Highlighter = function()
 {
-	this.wrapColumn = 80;
-	
 	this.params = {};
 	this.div = null;
 	this.lines = null;
@@ -634,65 +673,7 @@ dp.sh.Highlighter.prototype = {
 		result.highlighter = this;
 		return result;
 	},
-	
-	/**
-	 * Creates a new text element, applies given style and adds it
-	 * to the this.div element.
-	 * 
-	 * @private
-	 * 
-	 * @param {String} str    Text.
-	 * @param {String} css    Style name.
-	 */
-	addBit: function(str, css)
-	{
-		if (str === null || str.length === 0) 
-			return;
-		
-		var span = this.createElement('SPAN');
-		
-		//	str = str.replace(/&/g, '&amp;');
-		str = str.replace(/ /g, '&nbsp;');
-		str = str.replace(/</g, '&lt;');
-		//	str = str.replace(/&lt;/g, '<');
-		//	str = str.replace(/>/g, '&gt;');
-		str = str.replace(/\n/gm, '&nbsp;<br>');
-		
-		// when adding a piece of code, check to see if it has line breaks in it
-		// and if it does, wrap individual line breaks with span tags
-		if (css != null)
-		{
-			if ((/br/gi).test(str)) 
-			{
-				var lines = str.split('&nbsp;<br>');
-				
-				for (var i = 0; i < lines.length; i++) 
-				{
-					span = this.createElement('SPAN');
-					span.className = css;
-					span.innerHTML = lines[i];
-					
-					this.div.appendChild(span);
-					
-					// don't add a <BR> for the last line
-					if (i + 1 < lines.length) 
-						this.div.appendChild(this.createElement('BR'));
-				}
-			}
-			else 
-			{
-				span.className = css;
-				span.innerHTML = str;
-				this.div.appendChild(span);
-			}
-		}
-		else 
-		{
-			span.innerHTML = str;
-			this.div.appendChild(span);
-		}
-	},
-	
+
 	/**
 	 * Checks if one match is inside another.
 	 * 
@@ -731,11 +712,11 @@ dp.sh.Highlighter.prototype = {
 			for (var i = 0; i < this.regexList.length; i++) 
 			{
 				var item = this.regexList[i];
-				result = result.concat(dp.sh.getMatches(this.code, item.regex, item.css));
+				result = result.concat(dp.sh.Utils.getMatches(this.code, item.regex, item.css));
 			}
 		
 		// sort the matches
-		result = result.sort(dp.sh.matchesSortCallback);
+		result = result.sort(dp.sh.Utils.matchesSortCallback);
 
 		this.matches = result;
 	},
@@ -778,7 +759,6 @@ dp.sh.Highlighter.prototype = {
 	
 	/**
 	 * Splits block of text into individual DIV lines.
-	 * Generates the whole visual aspect of the highlighted code.
 	 * 
 	 * @private 
 	 * @param {String} code     Code to highlight.
@@ -805,7 +785,7 @@ dp.sh.Highlighter.prototype = {
 				lineNumber = dp.sh.Utils.padNumber(firstLine + i, padLength),
 				highlighted = dp.sh.Utils.inArray(highlightedLines, (firstLine + i).toString())
 				;
-			
+//			alert(line);
 			if (indent != null)
 			{
 				line = line.substr(indent[0].length);
@@ -826,12 +806,12 @@ dp.sh.Highlighter.prototype = {
 			
 			line = dp.sh.Utils.trim(line);
 			
+			if (line.length == 0)
+				line = '&nbsp;';
+			
 			if (highlighted)
 				lineClass += ' highlighted';
 				
-			if (line.length == 0) 
-				line = '&nbsp;';
-			
 			code += 
 				'<div class="' + lineClass + '">'
 					+ '<div class="number">' + lineNumber + '.</div>'
@@ -855,7 +835,7 @@ dp.sh.Highlighter.prototype = {
 
 		var pos = 0, 
 			code = '',
-			decorateBit = dp.sh.Utils.decorateBit
+			decorateBit = dp.sh.Utils.decorateBit // make an alias to save some space
 			;
 		
 		// Finally, go through the final list of matches and pull the all
@@ -867,12 +847,13 @@ dp.sh.Highlighter.prototype = {
 			if (match === null || match.length === 0) 
 				continue;
 			
-			code += decorateBit(copy(this.code, pos, match.index), null);
+			code += decorateBit(copy(this.code, pos, match.index), 'plain');
 			code += decorateBit(match.value, match.css);
 			pos = match.index + match.length;
 		}
 		
-		code += decorateBit(this.code.substr(pos), null);
+		code += decorateBit(this.code.substr(pos), 'plain');
+		
 		code = this.splitIntoDivs(dp.sh.Utils.trim(code));
 		
 		if (this.getParam('auto-links', true))
@@ -894,6 +875,11 @@ dp.sh.Highlighter.prototype = {
 	 * 		<td>Description</td>
 	 * </th>
 	 * <tr>
+	 * 		<td>auto-links</td>
+	 * 		<td>true</td>
+	 * 		<td>Turns all URLs into links.</td>
+	 * </tr>
+	 * <tr>
 	 * 		<td>collapse</td>
 	 * 		<td>false</td>
 	 * 		<td>Makes entire code element invisible by default and adds '+ expand code' button to the tool bar.</td>
@@ -904,9 +890,9 @@ dp.sh.Highlighter.prototype = {
 	 * 		<td>Hides the gutter with line numbers when <code>false</code>.</td>
 	 * </tr>
 	 * <tr>
-	 * 		<td>gutter</td>
-	 * 		<td>true</td>
-	 * 		<td>Hides the gutter with line numbers when <code>false</code>.</td>
+	 * 		<td>ruler</td>
+	 * 		<td>false</td>
+	 * 		<td>Adds ruler.</td>
 	 * </tr>
 	 * <tr>
 	 * 		<td>smart-tabs</td>
@@ -930,9 +916,7 @@ dp.sh.Highlighter.prototype = {
 	
 		if (params != null)
 			this.params = params;
-			
-		this.originalCode = code;
-		this.code = dp.sh.Utils.trim(dp.sh.Utils.unindent(code));
+
 		this.div = this.createElement('DIV');
 		this.bar = this.createElement('DIV');
 		this.lines = this.createElement('DIV');
@@ -946,10 +930,16 @@ dp.sh.Highlighter.prototype = {
 		
 		if (this.getParam('gutter', true) == false)
 			this.div.className += ' nogutter';
+
+		this.originalCode = code;
+		this.code = dp.sh.Utils.trimFirstAndLastLines(code);
 		
 		// replace tabs with spaces
 		if (this.getParam('smart-tabs', true)) 
+		{
 			this.code = dp.sh.Utils.processSmartTabs(this.code, this.getParam('smart-tabs-size', 4));
+			this.code = dp.sh.Utils.unindent(this.code);
+		}
 		
 		if (this.getParam('controls', true)) 
 			this.bar.appendChild(dp.sh.Toolbar.create(this));
@@ -1031,6 +1021,8 @@ dp.sh.highlight = function(element)
 		highlighter.highlight(element[propertyName], params);
 		highlighter.source = element;
 		element.parentNode.insertBefore(highlighter.div, element);
+		
+		highlighter = null;
 	}
 }
 

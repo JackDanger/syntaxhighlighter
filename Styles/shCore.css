@@ -62,15 +62,6 @@
 	border-left: none;
 }
 
-.dp-highlighter a,
-.dp-highlighter a:hover
-{
-	background: none;
-	border: none;
-	padding: 0;
-	margin: 0;
-}
-
 .dp-highlighter .bar
 {
 	padding-left: 50px;

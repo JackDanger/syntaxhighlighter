@@ -36,7 +36,7 @@ $sample = <<<EOF
 		else
 		{
 			/*
-			// if index is the same, sort by length
+	// 		if index is the same, sort by length
 			if(m1.length < m2.length)
 				return -1;
 			else if(m1.length > m2.length)

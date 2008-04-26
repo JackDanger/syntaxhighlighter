@@ -22,10 +22,13 @@
 				assertEquals('000101', dp.sh.Utils.padNumber(101, 6));
 			}
 			
-			function test_decorateBit_should_replace_spaces()
+			function test_decorateBit()
 			{
-				assertEquals(' hello ', dp.sh.Utils.decorateBit(' hello '));
-				assertEquals('&nbsp;&nbsp; hello&nbsp;&nbsp; ', dp.sh.Utils.decorateBit('   hello   '));
+//				assertEquals(' hello ', dp.sh.Utils.decorateBit(' hello '));
+//				assertEquals('&nbsp;&nbsp; hello&nbsp;&nbsp; ', dp.sh.Utils.decorateBit('   hello   '));
+
+//				assertEquals('<span class="reset font t">hello</span>', dp.sh.Utils.decorateBit('hello', 't'));
+				assertEquals('&nbsp;&nbsp; <span class="reset font t">hello</span>', dp.sh.Utils.decorateBit('   hello', 't'));
 			}
 			
 			function test_trim()
@@ -67,6 +70,50 @@
 				assertTrue("1", dp.sh.Utils.inArray(array, 1));
 				assertTrue("hello", dp.sh.Utils.inArray(array, "hello"));
 				assertFalse("10", dp.sh.Utils.inArray(array, 10));
+			}
+			
+			function test_unindent()
+			{
+				assertEquals(
+					'line1\nline2\n',
+					dp.sh.Utils.unindent('\tline1\n\tline2\n')
+				);
+				
+				assertEquals(
+					'line1\nline2\n',
+					dp.sh.Utils.unindent('    line1\n    line2\n')
+				);
+				
+				assertEquals(
+					'line1\n    line2\n',
+					dp.sh.Utils.unindent('    line1\n        line2\n')
+				);
+			}
+			
+			function test_trimFirstAndLastLines()
+			{
+				assertEquals(
+					'\tline1\n\tline2',
+					dp.sh.Utils.trimFirstAndLastLines('\tline1\n\tline2\n')
+				);
+
+				assertEquals(
+					'\tline1\n\tline2',
+					dp.sh.Utils.trimFirstAndLastLines('  \n\tline1\n\tline2\n  ')
+				);
+				
+				assertEquals(
+					'\tline1\n\tline2',
+					dp.sh.Utils.trimFirstAndLastLines('\n\tline1\n\tline2   ')
+				);
+			}
+			
+			function test_processSmartTabs()
+			{
+				assertEquals(
+					'    line1\n    line2',
+					dp.sh.Utils.processSmartTabs('\tline1\n\tline2', 4)
+				);
 			}
 		</script>
 	</body>

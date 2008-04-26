@@ -69,17 +69,25 @@
 /************************************
  * Actual syntax highlighter colors.
  ************************************/
-.dp-highlighter .comments 
+.dp-highlighter .plain,
+.dp-highlighter .plain a
+{ 
+	color: #000;
+}
+
+.dp-highlighter .comments,
+.dp-highlighter .comments a
 { 
 	color: #008200;
 }
 
-.dp-highlighter .string 
+.dp-highlighter .string,
+.dp-highlighter .string a
 {
 	color: blue; 
 }
 
-.dp-highlighter .keyword 
+.dp-highlighter .keyword
 { 
 	color: #069; 
 	font-weight: bold; 

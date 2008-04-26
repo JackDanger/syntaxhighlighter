@@ -10,11 +10,13 @@ $content = <<<EOF
 EOF;
 
 $sample = <<<EOF
-<pre class="brush: css">
+<pre class="brush: c-sharp">
     /* http://blog.dreamprojections.com */
+	"http://blog.dreamprojections.com"
 </pre>
 
-<pre class="brush: css; auto-links: false">
+<pre class="brush: c-sharp; auto-links: false">
     /* http://blog.dreamprojections.com */
+	"http://blog.dreamprojections.com"
 </pre>
 EOF;
