@@ -64,6 +64,7 @@ dp.sh.Brushes.Php = function()
 
 	this.regexList = [
 		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comment' },			// one line comments
+		{ regex: dp.sh.RegexLib.SingleLinePerlComments,				css: 'comment' },			// one line comments
 		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comment' },			// multiline comments
 		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// double quoted strings
 		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// single quoted strings
