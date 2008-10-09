@@ -1,7 +1,7 @@
 /**
  * Code Syntax Highlighter.
- * Version 1.5.1
- * Copyright (C) 2004-2007 Alex Gorbatchev
+ * Version 1.5.2
+ * Copyright (C) 2004-2008 Alex Gorbatchev
  * http://www.dreamprojections.com/syntaxhighlighter/
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ var dp = {
 		RegexLib: {},
 		Brushes	: {},
 		Strings : {
-			AboutDialog : '<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://www.dreamprojections.com/syntaxhighlighter/?ref=about" target="_blank">http://www.dreamprojections.com/syntaxhighlighter</a></p>&copy;2004-2007 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'
+			AboutDialog : '<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://www.dreamprojections.com/syntaxhighlighter/?ref=about" target="_blank">http://www.dreamprojections.com/syntaxhighlighter</a></p>&copy;2004-2008 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'
 		},
 		ClipboardSwf : null,
-		Version : '1.5.1'
+		Version : '1.5.2'
 	}
 };
 

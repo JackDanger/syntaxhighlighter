@@ -1,7 +1,7 @@
 /**
  * Code Syntax Highlighter.
- * Version 1.5.1
- * Copyright (C) 2004-2007 Alex Gorbatchev
+ * Version 1.5.2
+ * Copyright (C) 2004-2008 Alex Gorbatchev
  * http://www.dreamprojections.com/syntaxhighlighter/
  *
  *  This program is free software: you can redistribute it and/or modify
