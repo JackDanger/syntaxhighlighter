@@ -26,19 +26,16 @@ dp.sh.Brushes.JScript = function()
 					'synchronized this throw throws transient true try typeof var void volatile while with';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.singleLineCComments,				css: 'comments' },			// one line comments
-		{ regex: dp.sh.RegexLib.multiLineCComments,					css: 'comments' },			// multiline comments
-		{ regex: dp.sh.RegexLib.doubleQuotedString,					css: 'string' },			// double quoted strings
-		{ regex: dp.sh.RegexLib.singleQuotedString,					css: 'string' },			// single quoted strings
-		{ regex: /\s*#.*/gm,										css: 'preprocessor' },		// preprocessor tags like #region and #endregion
-		{ regex: new RegExp(this.getKeywords(keywords), 'gm'),		css: 'keyword' }			// keywords
+		{ regex: dp.sh.RegexLib.SingleLineCComments,				css: 'comment' },			// one line comments
+		{ regex: dp.sh.RegexLib.MultiLineCComments,					css: 'comment' },			// multiline comments
+		{ regex: dp.sh.RegexLib.DoubleQuotedString,					css: 'string' },			// double quoted strings
+		{ regex: dp.sh.RegexLib.SingleQuotedString,					css: 'string' },			// single quoted strings
+		{ regex: new RegExp('^\\s*#.*', 'gm'),						css: 'preprocessor' },		// preprocessor tags like #region and #endregion
+		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),		css: 'keyword' }			// keywords
 		];
+
+	this.CssClass = 'dp-c';
 };
 
 dp.sh.Brushes.JScript.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.JScript.aliases	= ['js', 'jscript', 'javascript'];
-// Local Variables:
-// mode: javascript
-// indent-tabs-mode: t
-// c-file-style: "stroustrup"
-// End:
+dp.sh.Brushes.JScript.Aliases	= ['js', 'jscript', 'javascript'];

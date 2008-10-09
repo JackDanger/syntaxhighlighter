@@ -27,21 +27,23 @@ dp.sh.Brushes.Python = function()
     var special =  'None True False self cls class_';
 
     this.regexList = [
-        { regex: dp.sh.RegexLib.singleLinePerlComments, 		css: 'comments' },
-        { regex: /^\s*@\w+/gm, 									css: 'decorator' },
-        { regex: /(['\"]{3})([^\1])*?\1/gm, 					css: 'comments' },
-        { regex: /"(?!")(?:\.|\\\"|[^\""\n])*"/gm, 				css: 'string' },
-        { regex: /'(?!')*(?:\.|(\\\')|[^\''\n])*'/gm, 			css: 'string' },
-        { regex: /\b\d+\.?\w*/g, 								css: 'number' },
-        { regex: new RegExp(this.getKeywords(keywords), 'gm'), 	css: 'keyword' },
-        { regex: new RegExp(this.getKeywords(special), 'gm'), 	css: 'color1' }
+        { regex: dp.sh.RegexLib.SingleLinePerlComments, css: 'comment' },
+        { regex: new RegExp("^\\s*@\\w+", 'gm'), css: 'decorator' },
+        { regex: new RegExp("(['\"]{3})([^\\1])*?\\1", 'gm'), css: 'comment' },
+        { regex: new RegExp('"(?!")(?:\\.|\\\\\\"|[^\\""\\n\\r])*"', 'gm'), css: 'string' },
+        { regex: new RegExp("'(?!')*(?:\\.|(\\\\\\')|[^\\''\\n\\r])*'", 'gm'), css: 'string' },
+        { regex: new RegExp("\\b\\d+\\.?\\w*", 'g'), css: 'number' },
+        { regex: new RegExp(this.GetKeywords(keywords), 'gm'), css: 'keyword' },
+        { regex: new RegExp(this.GetKeywords(special), 'gm'), css: 'special' }
         ];
+
+    this.CssClass = 'dp-py';
+	this.Style =	'.dp-py .builtins { color: #ff1493; }' +
+					'.dp-py .magicmethods { color: #808080; }' +
+					'.dp-py .exceptions { color: brown; }' +
+					'.dp-py .types { color: brown; font-style: italic; }' +
+					'.dp-py .commonlibs { color: #8A2BE2; font-style: italic; }';
 };
 
 dp.sh.Brushes.Python.prototype  = new dp.sh.Highlighter();
-dp.sh.Brushes.Python.aliases    = ['py', 'python'];
-// Local Variables:
-// mode: javascript
-// indent-tabs-mode: t
-// c-file-style: "stroustrup"
-// End:
+dp.sh.Brushes.Python.Aliases    = ['py', 'python'];

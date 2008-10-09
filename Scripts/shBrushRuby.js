@@ -29,20 +29,19 @@ dp.sh.Brushes.Ruby = function()
 					'ThreadGroup Thread Time TrueClass';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.singleLinePerlComments,			css: 'comments' },		// one line comments
-		{ regex: dp.sh.RegexLib.doubleQuotedString,				css: 'string' },		// double quoted strings
-		{ regex: dp.sh.RegexLib.singleQuotedString,				css: 'string' },		// single quoted strings
-		{ regex: /:[a-z][A-Za-z0-9_]*/g,						css: 'color2' },		// symbols
-		{ regex: /(\$|@@|@)\w+/g,								css: 'variable bold' },	// $global, @instance, and @@class variables
-		{ regex: new RegExp(this.getKeywords(keywords), 'gm'),	css: 'keyword' },		// keywords
-		{ regex: new RegExp(this.getKeywords(builtins), 'gm'),	css: 'color1' }			// builtins
+		{ regex: dp.sh.RegexLib.SingleLinePerlComments,			css: 'comment' },	// one line comments
+		{ regex: dp.sh.RegexLib.DoubleQuotedString,				css: 'string' },	// double quoted strings
+		{ regex: dp.sh.RegexLib.SingleQuotedString,				css: 'string' },	// single quoted strings
+		{ regex: new RegExp(':[a-z][A-Za-z0-9_]*', 'g'),		css: 'symbol' },	// symbols
+		{ regex: new RegExp('(\\$|@@|@)\\w+', 'g'),				css: 'variable' },	// $global, @instance, and @@class variables
+		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),	css: 'keyword' },	// keywords
+		{ regex: new RegExp(this.GetKeywords(builtins), 'gm'),	css: 'builtin' }	// builtins
 		];
+
+	this.CssClass = 'dp-rb';
+	this.Style =	'.dp-rb .symbol { color: #a70; }' +
+					'.dp-rb .variable { color: #a70; font-weight: bold; }';
 };
 
 dp.sh.Brushes.Ruby.prototype = new dp.sh.Highlighter();
-dp.sh.Brushes.Ruby.aliases = ['ruby', 'rails', 'ror'];
-// Local Variables:
-// mode: javascript
-// indent-tabs-mode: t
-// c-file-style: "stroustrup"
-// End:
+dp.sh.Brushes.Ruby.Aliases = ['ruby', 'rails', 'ror'];

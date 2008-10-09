@@ -19,17 +19,6 @@
 
 dp.sh.Brushes.CSS = function()
 {
-
-	function getKeywordsCSS(str)
-	{
-		return '\\b([a-z_]|)' + str.replace(/ /g, '(?=:)\\b|\\b([a-z_\\*]|\\*|)') + '(?=:)\\b';
-	};
-	
-	function getValuesCSS(str)
-	{
-		return '\\b' + str.replace(/ /g, '(?!-)(?!:)\\b|\\b()') + '\:\\b';
-	};
-
 	var keywords =	'ascent azimuth background-attachment background-color background-image background-position ' +
 					'background-repeat background baseline bbox border-collapse border-color border-spacing border-style border-top ' +
 					'border-right border-bottom border-left border-top-color border-right-color border-bottom-color border-left-color ' +
@@ -59,24 +48,35 @@ dp.sh.Brushes.CSS = function()
 					'table-caption table-cell table-column table-column-group table-footer-group table-header-group table-row table-row-group teal '+
 					'text-bottom text-top thick thin top transparent tty tv ultra-condensed ultra-expanded underline upper-alpha uppercase upper-latin '+
 					'upper-roman url visible wait white wider w-resize x-fast x-high x-large x-loud x-low x-slow x-small x-soft xx-large xx-small yellow';
+	
+	var fonts =		'[mM]onospace [tT]ahoma [vV]erdana [aA]rial [hH]elvetica [sS]ans-serif [sS]erif';
 
 	this.regexList = [
-		{ regex: dp.sh.RegexLib.multiLineCComments,						css: 'comments' },	// multiline comments
-		{ regex: dp.sh.RegexLib.doubleQuotedString,						css: 'string' },	// double quoted strings
-		{ regex: dp.sh.RegexLib.singleQuotedString,						css: 'string' },	// single quoted strings
-		{ regex: /\#[a-zA-Z0-9]{3,6}/g,									css: 'value' },		// html colors
-		{ regex: /(-?\d+)(\.\d+)?(px|em|pt|\:|\%|)/g,					css: 'value' },		// sizes
-		{ regex: /!important/g,											css: 'color3' },	// !important
-		{ regex: new RegExp(getKeywordsCSS(keywords), 'gm'),			css: 'keyword' },	// keywords
-		{ regex: new RegExp(getValuesCSS(values), 'g'),					css: 'value' }		// values
+		{ regex: dp.sh.RegexLib.MultiLineCComments,						css: 'comment' },	// multiline comments
+		{ regex: dp.sh.RegexLib.DoubleQuotedString,						css: 'string' },	// double quoted strings
+		{ regex: dp.sh.RegexLib.SingleQuotedString,						css: 'string' },	// single quoted strings
+		{ regex: new RegExp('\\#[a-zA-Z0-9]{3,6}', 'g'),				css: 'value' },		// html colors
+		{ regex: new RegExp('(-?\\d+)(\.\\d+)?(px|em|pt|\:|\%|)', 'g'),	css: 'value' },		// sizes
+		{ regex: new RegExp('!important', 'g'),							css: 'important' },	// !important
+		{ regex: new RegExp(this.GetKeywordsCSS(keywords), 'gm'),		css: 'keyword' },	// keywords
+		{ regex: new RegExp(this.GetValuesCSS(values), 'g'),			css: 'value' },		// values
+		{ regex: new RegExp(this.GetValuesCSS(fonts), 'g'),				css: 'value' }		// fonts
 		];
+
+	this.CssClass = 'dp-css';
+	this.Style =	'.dp-css .value { color: black; }' +
+					'.dp-css .important { color: red; }';
+};
+
+dp.sh.Highlighter.prototype.GetKeywordsCSS = function(str)
+{
+	return '\\b([a-z_]|)' + str.replace(/ /g, '(?=:)\\b|\\b([a-z_\\*]|\\*|)') + '(?=:)\\b';
+};
+
+dp.sh.Highlighter.prototype.GetValuesCSS = function(str)
+{
+	return '\\b' + str.replace(/ /g, '(?!-)(?!:)\\b|\\b()') + '\:\\b';
 };
 
 dp.sh.Brushes.CSS.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.CSS.aliases	= ['css'];
-
-// Local Variables:
-// mode: javascript
-// indent-tabs-mode: t
-// c-file-style: "stroustrup"
-// End:
+dp.sh.Brushes.CSS.Aliases	= ['css'];
