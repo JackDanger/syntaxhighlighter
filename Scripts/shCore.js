@@ -415,12 +415,12 @@ dp.sh.Highlighter.prototype.SwitchToList = function()
 			}
 		}
 		
-		columns.className = 'columns';
+		columns.className = 'cumns';
 		columns.appendChild(div);
 		this.bar.appendChild(columns);
 	}
 
-	for(var i = 0, lineIndex = this.firstLine; i < lines.length - 1; i++, lineIndex++)
+	for(var i = 0; i < lines.length - 1; i++)
 	{
 		var li = this.CreateElement('LI');
 		var span = this.CreateElement('SPAN');
@@ -499,7 +499,8 @@ dp.sh.Highlighter.prototype.Highlight = function(code)
 	this.bar.className = 'bar';
 	
 	// set the first line
-	this.ol.start = this.firstLine;
+	if (this.firstLine != null)
+		this.ol.start = this.firstLine;
 
 	if(this.CssClass != null)
 		this.ol.className = this.CssClass;
